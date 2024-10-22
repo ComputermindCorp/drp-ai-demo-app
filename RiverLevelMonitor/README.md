@@ -23,7 +23,7 @@ The AI model used for the sample application is [Deeplabv3](https://arxiv.org/pd
 
 | Board | `EXE_DIR` | URL | `SO_FILE` | File Location |
 | --- | --- | --- | --- | --- |
-| RZ/V2H EVK | exe |<span style="font-size: small">`https://github.com/ComputermindCorp/drp-ai-demo-app-review/releases/download/1.0.0/` | deploy.so | [Release v1.0.0](https://github.com/ComputermindCorp/drp-ai-demo-app-review/releases/download/1.0.0/deploy.so) |
+| RZ/V2H EVK | exe |<span style="font-size: small">`https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/1.0.0/` | deploy.so | [Release v1.0.0](https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/1.0.0/deploy.so) |
 
     └── RiverLevelMonitor/  
          ├── src/

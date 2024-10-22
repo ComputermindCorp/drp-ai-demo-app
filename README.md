@@ -6,6 +6,7 @@ This repository provides a demonstration application of DRP-AI that can be appli
 | Demonstration application | Architecture | Description |
 | --- | --- | --- |
 | [Body Measurement](BodyMeasurement/README.md) | [HRNET](https://arxiv.org/pdf/1908.07919) | This application is designed to estimate human pose in captured images from distance data of a depth camera, and display the results such as height on an HDMI screen. |
+| [River Level Monitor](RiverLevelMonitor/README.md) | [Deeplabv3](https://arxiv.org/pdf/1706.05587.pdf) | This application is designed to detect river objects in the images captured by the camera and display the flood risk of the river based on its area on the HDMI screen. |
 
 # Setup
 To see the install guide, please refer to the [Install guide](installguide.md).

@@ -13,7 +13,7 @@ This repository provides a demonstration application of DRP-AI that can be appli
 To see the install guide, please refer to the [Install guide](installguide.md).
 
 # Contact us
-ai.seles@compmind.co.jp
+support@compmind.co.jp
 
 [Computermind corporation](https://www.compmind.co.jp/) is a [Renesas RZ Partner Ecosystem](https://www.renesas.com/us/en/products/microcontrollers-microprocessors/rz-mpus/rz-partner-solutions).
 

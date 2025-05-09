@@ -226,13 +226,13 @@ The folder contains following items.
 
     | Board | `EXE_DIR` | URL | File name | File Location |
     | --- | --- | --- | --- | --- |
-    | RZ/V2H EVK and RZ/V2N EVK | exe |<span style="font-size: small">`https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/2.0.0/` | C01_river_area_monitoring_deploy_tvm_v2h-v230.so | [Release v2.0.0](https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/2.0.0/C01_river_area_monitoring_deploy_tvm_v2h-v230.so) |
+    | RZ/V2H EVK and RZ/V2N EVK | exe |<span style="font-size: small">`https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v5.20/` | C01_river_area_monitoring_deploy_tvm_v2h-v230.so | [v5.20 Release](https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v5.20/C01_river_area_monitoring_deploy_tvm_v2h-v230.so) |
 
     >**Note:** Since RZ/V2N is a brother chip of RZ/V2H, the same environment can be used.  
 
     ```sh
     cd C01_river_area_monitoring/<EXE_DIR>/deeplabv3_cam
-    wget https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/2.0.0/C01_river_area_monitoring_deploy_tvm_v2h-v230.so
+    wget https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v5.20/C01_river_area_monitoring_deploy_tvm_v2h-v230.so
     ```
 
 2. Rename the `C01_river_area_monitoring_deploy_*.so` to `deploy.so`.

@@ -293,13 +293,13 @@ The folder contains following items.
         <tr>
           <td rowspan="2">RZ/V2H EVK and RZ/V2N EVK</td>
           <td rowspan="2">exe</td>
-          <td rowspan="2"><span style="font-size: small"><code>https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/2.0.0/</code></span></td>
+          <td rowspan="2"><span style="font-size: small"><code>https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v5.20/</code></span></td>
           <td>librealsense2.so.2.56.2</td>
-          <td><a href="https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/2.0.0/librealsense2.so.2.56.2">Release v2.0.0</a></td>
+          <td><a href="https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v5.20/librealsense2.so.2.56.2">v5.20 Release</a></td>
         </tr>
         <tr>
           <td>C02_depth_cam_human_body_estimation_deploy_tvm_v2h-v230.so</td>
-          <td><a href="https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/2.0.0/C02_depth_cam_human_body_estimation_deploy_tvm_v2h-v230.so">Release v2.0.0</a></td>
+          <td><a href="https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v5.20/C02_depth_cam_human_body_estimation_deploy_tvm_v2h-v230.so">v5.20 Release</a></td>
         </tr>
     </table>
 
@@ -310,7 +310,7 @@ The folder contains following items.
       
         ```sh
         cd C02_depth_cam_human_body_estimation/<EXE_DIR>
-        wget https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/2.0.0/librealsense2.so.2.56.2
+        wget https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v5.20/librealsense2.so.2.56.2
         ln -s librealsense2.so.2.56.2 librealsense2.so.2.56
         ln -s librealsense2.so.2.56 librealsense2.so
         ```    
@@ -318,7 +318,7 @@ The folder contains following items.
     - deploy.so
         ```sh
         cd C02_depth_cam_human_body_estimation/<EXE_DIR>/hrnet_cam
-        wget https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/2.0.0/C02_depth_cam_human_body_estimation_deploy_tvm_v2h-v230.so
+        wget https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v5.20/C02_depth_cam_human_body_estimation_deploy_tvm_v2h-v230.so
         ```
         
 2. Rename the `C02_depth_cam_human_body_estimation_*.so` to `deploy.so`.

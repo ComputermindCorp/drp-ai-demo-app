@@ -255,13 +255,13 @@ The folder contains following items.
         <tr>
           <td rowspan="2">RZ/V2H EVK and RZ/V2N EVK</td>
           <td rowspan="2">exe</td>
-          <td rowspan="2"><span style="font-size: small"><code>https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/2.0.0/</code></span></td>
+          <td rowspan="2"><span style="font-size: small"><code>https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v5.20/</code></span></td>
           <td>input_data_1.zip</td>
-          <td><a href="https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/2.0.0/input_data_1.zip">Release v2.0.0</a></td>
+          <td><a href="https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v5.20/input_data_1.zip">v5.20 Release</a></td>
         </tr>
         <tr>
           <td>C03_surface_anomaly_detection_deploy_tvm_v2h-v230.so</td>
-          <td><a href="https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/2.0.0/C03_surface_anomaly_detection_deploy_tvm_v2h-v230.so">Release v2.0.0</a></td>
+          <td><a href="https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v5.20/C03_surface_anomaly_detection_deploy_tvm_v2h-v230.so">v5.20 Release</a></td>
         </tr>
     </table>
 
@@ -270,14 +270,14 @@ The folder contains following items.
     - Sample models and Data
         ```sh
         cd C03_surface_anomaly_detection/<EXE_DIR>
-        wget https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/2.0.0/input_data_1.zip
+        wget https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v5.20/input_data_1.zip
         unzip input_data_1.zip
         ```
         > It includes default memory bank binary file and default image files for use in camera mode.
     - deploy.so
         ```sh
         cd C03_surface_anomaly_detection/<EXE_DIR>/patch_core_demo
-        wget https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/2.0.0/C03_surface_anomaly_detection_deploy_tvm_v2h-v230.so
+        wget https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v5.20/C03_surface_anomaly_detection_deploy_tvm_v2h-v230.so
         ```
 
 2. Rename the `C03_surface_anomaly_detection_deploy_*.so` to `deploy.so`. 

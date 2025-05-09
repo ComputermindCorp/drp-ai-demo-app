@@ -1,10 +1,10 @@
 /***********************************************************************************************************************
-* Copyright (C) 2024 Renesas Electronics Corporation. All rights reserved.
+* Copyright (C) 2024 Computermind Corp. All rights reserved.
 ***********************************************************************************************************************/
 /***********************************************************************************************************************
 * File Name    : image.h
 * Version      : 1.00
-* Description  : RZ/V2H DRP-AI Sample Application for River Level Monitor with MIPI/USB Camera
+* Description  : RZ/V2H DRP-AI Sample Application for PyTorch DeepLabv3 + Megvii-Base Detection YOLOX with MIPI/USB Camera
 ***********************************************************************************************************************/
 
 #ifndef IMAGE_H
@@ -27,7 +27,7 @@ class Image
         uint8_t get_buf_id();
         void write_string_rgb(std::string str, uint32_t align_type, uint32_t x, uint32_t y, float size, uint32_t color);
         void write_string_overlay(std::string str, uint32_t align_type, uint32_t x, uint32_t y, float scale, uint32_t color);
-        uint8_t draw_sem_seg(uint8_t* buffer,uint32_t color, Camera *capture);
+        uint8_t draw_sem_seg(uint8_t* buffer, uint32_t color, Camera *capture, size_t class_w, size_t class_h, size_t seg_w, size_t seg_h, bool is_padding);
         void write_string_rgb_boundingbox(std::string str, uint32_t align_type,  uint32_t x_min, uint32_t y_min, uint32_t x_max, uint32_t y_max,float scale, uint32_t color);
         void write_string_rgb_label_box(std::string str, uint32_t align_type,  uint32_t x_min, uint32_t y_min, uint32_t x_max, uint32_t y_max,float scale, uint32_t color, uint32_t color_str);
 
@@ -46,7 +46,7 @@ class Image
         void draw_rect_box(int32_t x, int32_t y, int32_t w, int32_t h, const char* str,uint32_t color,float scale);
         void draw_rect_label_box(int32_t x, int32_t y, int32_t w, int32_t h, const char* str,uint32_t color,float scale, uint32_t color_str);
         void convert_format();
-        void convert_size(int in_w, int resize_w, bool is_padding);
+        void convert_size(int in_w, int resize_w, int in_h, int resize_h, bool is_padding);
         void camera_to_image(const uint8_t* buffer, int32_t size);
         void camera_to_capture_image(const uint8_t* buffer, int32_t size);
         void draw_line(int32_t x0, int32_t y0, int32_t x1, int32_t y1, uint32_t color);

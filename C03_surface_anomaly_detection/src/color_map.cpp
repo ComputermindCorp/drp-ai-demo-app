@@ -1,10 +1,10 @@
 /***********************************************************************************************************************
-* Copyright (C) 2023 Renesas Electronics Corporation. All rights reserved.
+* Copyright (C) 2024 Computermind Corp. All rights reserved.
 ***********************************************************************************************************************/
 /***********************************************************************************************************************
 * File Name    : color_map.cpp
 * Version      : 1.00
-* Description  : for RZ/V2H DRP-AI Sample Application with MIPI/USB Camera
+* Description  : for RZ/V2H DRP-AI Sample Application for PyTorch ResNet with MIPI/USB Camera or Image
 ***********************************************************************************************************************/
 
 /*****************************************

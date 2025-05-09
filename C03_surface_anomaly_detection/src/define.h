@@ -1,10 +1,10 @@
 /***********************************************************************************************************************
-* Copyright (C) 2023 Renesas Electronics Corporation. All rights reserved.
+* Copyright (C) 2024 Computermind Corp. All rights reserved.
 ***********************************************************************************************************************/
 /***********************************************************************************************************************
 * File Name    : define.h
 * Version      : 1.00
-* Description  : RZ/V2H DRP-AI Sample Application for PyTorch ResNet with MIPI/USB Camera
+* Description  : RZ/V2H DRP-AI Sample Application for PyTorch ResNet with MIPI/USB Camera or Image
 ***********************************************************************************************************************/
 
 #ifndef DEFINE_MACRO_H
@@ -42,9 +42,14 @@
 ******************************************/
 /* Input Camera support */
 /* n = 0: USB Camera, n = 1: eCAM22 */
-#define INPUT_CAM_TYPE              (1)
+#define INPUT_CAM_TYPE              (0)
 
 /* Output Camera Size */
+#if INPUT_CAM_TYPE == 0
+#define CAM_INPUT_VGA
+#else /*INPUT_CAM_TYPE*/
+#define CAM_INPUT_FHD
+#endif /*INPUT_CAM_TYPE*/
 #define MIPI_CAM_RES "1920x1080"
 
 /*Time Measurement Flag*/
@@ -74,8 +79,13 @@ const static std::string mem_bank_name = "resnet18_quantization_onnx_size224_par
 * Macro for ResNet
 ******************************************/
 /*DRP-AI Output image information*/
+#ifdef CAM_INPUT_VGA
+#define DRPAI_INPUT_WIDTH           (480)
+#define DRPAI_INPUT_HEIGHT          (480)
+#else /* CAM_INPUT_FHD */
 #define DRPAI_INPUT_WIDTH           (512)
 #define DRPAI_INPUT_HEIGHT          (512)
+#endif
 
 /*DRP-AI Output image information*/
 #define OUTPUT_LAYER_1_C            (128)
@@ -112,8 +122,13 @@ const static std::string mem_bank_name = "resnet18_quantization_onnx_size224_par
 /*     (When DRPAI_FREQ = 3 or more.)    */
 
 /*Camera:: Capture Image Information*/
+#ifdef CAM_INPUT_VGA
+#define CAM_IMAGE_WIDTH             (640)
+#define CAM_IMAGE_HEIGHT            (480)
+#else /* CAM_INPUT_FHD */
 #define CAM_IMAGE_WIDTH             (1920)
 #define CAM_IMAGE_HEIGHT            (1080)
+#endif
 
 #define CAM_IMAGE_CHANNEL_YUY2      (2)
 #define CAM_IMAGE_SIZE              (CAM_IMAGE_WIDTH * CAM_IMAGE_HEIGHT * CAM_IMAGE_CHANNEL_YUY2)
@@ -130,6 +145,20 @@ const static std::string mem_bank_name = "resnet18_quantization_onnx_size224_par
 /*Display Information */
 #define WIN_SIZE_WIDTH              (1024)
 #define WIN_SIZE_HEIGHT             (768)
+#define DSP_SIZE_WIDTH              (960)
+#define DSP_SIZE_HEIGHT             (540)
+
+#ifdef CAM_INPUT_VGA
+#define IMAGE_OUTPUT_WIDTH          (720)
+#define IMAGE_OUTPUT_HEIGHT         (540)
+#define RECTANGLE_WIDTH             (540)
+#define RECTANGLE_HEIGHT            (540)
+#else /* CAM_INPUT_FHD */
+#define IMAGE_OUTPUT_WIDTH          (960)
+#define IMAGE_OUTPUT_HEIGHT         (540)
+#define RECTANGLE_WIDTH             (512)
+#define RECTANGLE_HEIGHT            (512)
+#endif
 
 #define IMAGE_CHANNEL_BGRA          (4)
 #define WL_BUF_NUM                  (2)

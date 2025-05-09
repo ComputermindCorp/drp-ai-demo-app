@@ -1,10 +1,10 @@
 /***********************************************************************************************************************
-* Copyright (C) 2023 Renesas Electronics Corporation. All rights reserved.
+* Copyright (C) 2024 Computermind Corp. All rights reserved.
 ***********************************************************************************************************************/
 /***********************************************************************************************************************
 * File Name    : image.cpp
 * Version      : 1.00
-* Description  : RZ/V2H DRP-AI Sample Application for PyTorch ResNet with MIPI/USB Camera
+* Description  : RZ/V2H DRP-AI Sample Application for PyTorch ResNet with MIPI/USB Camera or Image
 ***********************************************************************************************************************/
 
 /*****************************************
@@ -144,20 +144,33 @@ void Image::draw_rect_add_txt_multi(cv::Mat src, std::vector<std::pair<std::stri
 ******************************************/
 cv::Mat Image::convert_to_disp_img(int mode, cv::Mat img, std::string name)
 {
-    cv::Mat work_mat = cv::Mat::zeros(cv::Size(960,540), CV_8UC4);
+    cv::Mat work_mat = cv::Mat::zeros(cv::Size(DSP_SIZE_WIDTH, DSP_SIZE_HEIGHT), CV_8UC4);
     cv::Mat convert_mat;
 
-    if(mode != 0){
+    if (mode != 0)
+    {
+#ifdef CAM_INPUT_VGA
+        cv::Mat resize;
+        cv::resize(img, resize, cv::Size(IMAGE_OUTPUT_WIDTH, IMAGE_OUTPUT_HEIGHT), 0, 0, cv::INTER_NEAREST);
+        cv::Mat dst;
+        uint32_t pad_left = (DSP_SIZE_WIDTH - IMAGE_OUTPUT_WIDTH) / 2;
+        uint32_t pad_right = DSP_SIZE_WIDTH - IMAGE_OUTPUT_WIDTH - pad_left;
+        copyMakeBorder(resize, dst, 0, 0, pad_left, pad_right, cv::BORDER_CONSTANT, cv::Scalar(0, 0, 0));
+        cv::resize(dst, convert_mat, cv::Size(work_mat.cols, work_mat.rows));
+#else /* CAM_INPUT_FHD */
         cv::resize(img, convert_mat, cv::Size(work_mat.cols, work_mat.rows));
-        int width = DRPAI_INPUT_WIDTH;
-        int height = DRPAI_INPUT_HEIGHT;
+#endif
+        /* rectangle */
+        int width = RECTANGLE_WIDTH;
+        int height = RECTANGLE_HEIGHT;
         int x = (convert_mat.cols - width) / 2;
         int y = (convert_mat.rows - height) / 2;
         cv::rectangle(convert_mat, cv::Point(x, y), cv::Point(x + width, y + height), CV_RED, 2);
         return convert_mat.clone();
     }
-    else{
-        cv::resize(img, convert_mat, cv::Size(img.cols, work_mat.rows));
+    else
+    {
+        cv::resize(img, convert_mat, cv::Size(work_mat.rows, work_mat.rows));
         cv::Mat Roi1(work_mat, cv::Rect((work_mat.cols - convert_mat.cols) / 2, (work_mat.rows - convert_mat.rows) / 2, convert_mat.cols, convert_mat.rows));
         convert_mat.copyTo(Roi1);
 
@@ -212,7 +225,7 @@ cv::Mat Image::create_heatmap_image(float* anomaly_map)
 cv::Mat Image::create_result_sc(cv::Mat ret_img, float* map, double score, double threshold, double pre, double inf, double post)
 {
     double scale = 0.7;
-    int y = 34;
+    int result_image_top = (600 - ret_img.rows) / 2;
     std::stringstream stream;
     cv::Size textSize;
     cv::Mat base_sc(Size(WIN_SIZE_WIDTH, 600), CV_8UC4, Scalar(80, 63, 51));
@@ -221,7 +234,7 @@ cv::Mat Image::create_result_sc(cv::Mat ret_img, float* map, double score, doubl
     cv::cvtColor(ret_img, ret_img, cv::COLOR_RGB2BGRA);
     cv::addWeighted(ret_img, 0.5, heat_map, 1 - 0.5, 0.0, ret_img);
 
-    cv::Mat Roi1(base_sc, cv::Rect(30, 44, ret_img.cols, ret_img.rows));
+    cv::Mat Roi1(base_sc, cv::Rect(30, result_image_top, ret_img.cols, ret_img.rows));
     ret_img.copyTo(Roi1);
 
     std::vector<std::pair<std::string, double>> time_dic{
@@ -235,8 +248,8 @@ cv::Mat Image::create_result_sc(cv::Mat ret_img, float* map, double score, doubl
         stream << e.first << std::fixed << std::setprecision(1) << std::round(e.second * 10) / 10 << "ms";
         std::string str_time = stream.str();
         textSize = getTextSize(str_time, FONT_HERSHEY_SIMPLEX, scale, 2, 0);
-        putText(base_sc, str_time, Point((base_sc.cols - 30) - textSize.width, y + textSize.height + 10), FONT_HERSHEY_SIMPLEX, scale, CV_WHITE, 2);
-        y += textSize.height + 10;
+        putText(base_sc, str_time, Point((base_sc.cols - 30) - textSize.width, result_image_top + textSize.height + 10), FONT_HERSHEY_SIMPLEX, scale, CV_WHITE, 2);
+        result_image_top += textSize.height + 10;
     }
 
     stream.str("");
@@ -260,7 +273,7 @@ cv::Mat Image::create_result_sc(cv::Mat ret_img, float* map, double score, doubl
         {str_score, 1.6},
         {str_thresh, 0.6},
     };
-    draw_rect_add_txt_multi(base_sc, txt_dic, 580, y + 30, 980, y + 30 + 270, scalar);
+    draw_rect_add_txt_multi(base_sc, txt_dic, 580, result_image_top + 30, 980, result_image_top + 30 + 270, scalar);
     return base_sc.clone();
 }
 

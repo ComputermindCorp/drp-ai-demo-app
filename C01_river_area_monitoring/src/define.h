@@ -1,10 +1,10 @@
 /***********************************************************************************************************************
-* Copyright (C) 2024 Renesas Electronics Corporation. All rights reserved.
+* Copyright (C) 2024 Computermind Corp. All rights reserved.
 ***********************************************************************************************************************/
 /***********************************************************************************************************************
 * File Name    : define.h
 * Version      : 1.00
-* Description  : RZ/V2H DRP-AI Sample Application for River Level Monitor with MIPI/USB Camera
+* Description  : RZ/V2H DRP-AI Sample Application for PyTorch DeepLabv3 + Megvii-Base Detection YOLOX with MIPI/USB Camera
 ***********************************************************************************************************************/
 
 #ifndef DEFINE_MACRO_H
@@ -37,10 +37,14 @@
 ******************************************/
 /* Input Camera support */
 /* n = 0: USB Camera, n = 1: eCAM22 */
-#define INPUT_CAM_TYPE 1
+#define INPUT_CAM_TYPE 0
 
 /* Output Camera Size */
+#if INPUT_CAM_TYPE == 0
+#define CAM_INPUT_VGA
+#else /*INPUT_CAM_TYPE*/
 #define CAM_INPUT_FHD
+#endif /*INPUT_CAM_TYPE*/
 #define IMAGE_OUTPUT_FHD
 #define MIPI_CAM_RES "1920x1080"
 
@@ -224,11 +228,13 @@ const static uint32_t num_inf_out =  (NUM_CLASS + 5) * NUM_BB * num_grids[0] * n
 
 /*DRP-AI Input image information*/
 #ifdef CAM_INPUT_VGA
-#define DRPAI_OUT_WIDTH             (960)
-#define DRPAI_OUT_HEIGHT            (720)
+#define DRPAI_OUT_WIDTH             (CAM_IMAGE_WIDTH * 2)
+#define DRPAI_OUT_HEIGHT            (CAM_IMAGE_HEIGHT * 2)
+#define CAM_RESIZED_PADDING         (1)
 #else
 #define DRPAI_OUT_WIDTH             (IMAGE_OUTPUT_WIDTH)
 #define DRPAI_OUT_HEIGHT            (IMAGE_OUTPUT_HEIGHT)
+#define CAM_RESIZED_PADDING         (0)
 #endif
 
 #define IMAGE_CHANNEL_BGRA          (4)
@@ -256,7 +262,6 @@ const static uint32_t num_inf_out =  (NUM_CLASS + 5) * NUM_BB * num_grids[0] * n
 #define RED_DATA                    (0x0000FFu) /* in RGB */
 #define WHITE_DATA                  (0xFFFFFFu) /* in RGB */
 #define BLACK_DATA                  (0x000000u)
-
 
 /*Waiting Time*/
 #define WAIT_TIME                   (1000) /* microseconds */

@@ -1,10 +1,31 @@
-/***********************************************************************************************************************
-* Copyright (C) 2024 Renesas Electronics Corporation. All rights reserved.
-***********************************************************************************************************************/
+/*
+ * Original Code (C) Copyright Edgecortix, Inc. 2022
+ * Modified Code (C) Copyright Renesas Electronics Corporation 2023
+ * Modified Code (C) Copyright Computermind Corp 2024
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
+*/
+
 /***********************************************************************************************************************
 * File Name    : main.cpp
 * Version      : 1.00
-* Description  : RZ/V2H DRP-AI Sample Application for Patch Core with MIPI Camera or Image
+* Description  : RZ/V2H DRP-AI Sample Application for PyTorch ResNet with MIPI/USB Camera or Image
 ***********************************************************************************************************************/
 /*****************************************
  * includes
@@ -527,8 +548,10 @@ int main(int argc, char *argv[])
     printf("Argument : <input_file_path> = %s\n", file_path);
     printf("Argument : <AI-MAC_freq_factor> = %d\n", drpai_freq);
 
-    /* Behavior when DRP conflicts occur */
-    OCA_ConflictNotification(1);
+    /* OpenCVA Disable Code */
+    unsigned long OCA_list[16];
+    for (int i=0; i < 16; i++) OCA_list[i] = 0;
+    OCA_Activate( &OCA_list[0] );
 
     /*Init DRP-AI*/
     ret = init_drpai();

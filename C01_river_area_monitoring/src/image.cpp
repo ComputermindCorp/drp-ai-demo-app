@@ -1,10 +1,10 @@
 /***********************************************************************************************************************
-* Copyright (C) 2024 Renesas Electronics Corporation. All rights reserved.
+* Copyright (C) 2024 Computermind Corp. All rights reserved.
 ***********************************************************************************************************************/
 /***********************************************************************************************************************
 * File Name    : image.cpp
 * Version      : 1.00
-* Description  : RZ/V2H DRP-AI Sample Application for River Level Monitor with MIPI/USB Camera
+* Description  : RZ/V2H DRP-AI Sample Application for PyTorch DeepLabv3 + Megvii-Base Detection YOLOX with MIPI/USB Camera
 ***********************************************************************************************************************/
 
 /*****************************************
@@ -545,12 +545,16 @@ uint8_t Image::Clip(int value)
 /*****************************************
 * Function Name : convert_size
 * Description   : Scale down the input data (1920x1080) to the output data (1280x720) using OpenCV.
-* Arguments     : -
+* Arguments     : in_w = input image width
+*                 resize_w = resized image width
+*                 in_h = input image height
+*                 resize_h = resized image height
+*                 is_padding = whether padding or not
 * Return value  : -
 ******************************************/
-void Image::convert_size(int in_w, int resize_w, bool is_padding)
+void Image::convert_size(int in_w, int resize_w, int in_h, int resize_h, bool is_padding)
 {
-    if (in_w == resize_w)
+    if (in_w == resize_w && in_h == resize_h && !is_padding)
     {
         return;
     }
@@ -564,12 +568,16 @@ void Image::convert_size(int in_w, int resize_w, bool is_padding)
     cv::Mat org_image(img_h, img_w, CV_8UC4, img_buffer[buf_id]);
     cv::Mat resize_image;
     /* Resize */
-    cv::resize(org_image, resize_image, cv::Size(), 1.0 * resize_w / in_w, 1.0 * resize_w / in_w);
+    cv::resize(org_image, resize_image, cv::Size(resize_w, resize_h), 0, 0, cv::INTER_NEAREST);
 	
     if (is_padding)
     {
         cv::Mat dst_image;
-        copyMakeBorder(resize_image, dst_image, 0, 0, (out_w - resize_w) / 2, (out_w - resize_w) / 2, cv::BORDER_CONSTANT, cv::Scalar(0, 0, 0));
+        uint32_t pad_top = (out_h - resize_h) / 2;
+        uint32_t pad_bottom = out_h - resize_h - pad_top;
+        uint32_t pad_left = (out_w - resize_w) / 2;
+        uint32_t pad_right = out_w - resize_w - pad_left;
+        copyMakeBorder(resize_image, dst_image, pad_top, pad_bottom, pad_left, pad_right, cv::BORDER_CONSTANT, cv::Scalar(0, 0, 0));
         memcpy(img_buffer[buf_id], dst_image.data, out_w * out_h * out_c);
     }
     else
@@ -711,49 +719,73 @@ void Image::write_string_overlay(std::string str, uint32_t align_type, uint32_t 
 * Function Name : draw_sem_seg
 * Description   : draw segmentation image
 * Arguments     : buffer = inference result
+*                 color = color data
+*                 capture = pointer to the memory for capture class
+*                 class_w = width of class indice map
+*                 class_h = height of class indice map
+*                 seg_w = width of segmentation image
+*                 seg_h = height of segmentation image
+*                 is_padding = whether padding or not
 * Return Value  : -
 ******************************************/
-uint8_t Image::draw_sem_seg(uint8_t* buffer,uint32_t color, Camera *capture)
+uint8_t Image::draw_sem_seg(uint8_t* buffer, uint32_t color, Camera *capture, size_t class_w, size_t class_h, size_t seg_w, size_t seg_h, bool is_padding)
 {
-    uint32_t detected_id[NUM_CLASS_DEEPLABV3];
-    for (int i = 0; i < NUM_CLASS_DEEPLABV3; i++)
+    // Convert class map buffer ( seg_w x seg_h x 1 ) to RGBA segmentation map ( seg_w x seg_h x RGBA )
+    uint8_t seg_rgba_buffer[class_w * class_h * out_c];
+    uint32_t buf_idx = 0;
+    for (uint32_t i = 0; i < class_w * class_h * out_c; i += out_c)
     {
-        detected_id[i] = 0;
-    }
+        uint8_t red = 0x00;
+        uint8_t green = 0x00;
+        uint8_t blue = 0x00;
+        uint8_t alpha = 0x40;
 
-    uint32_t padding_size = (out_w - DRPAI_OUT_WIDTH) / 2;
-    uint8_t* pd = overlay_buffer[buf_id];
-    for (int y = 0; y < out_h; y++) {
-        for (int x = 0; x < out_w; x++, pd += 4) {
-
-            int red = 0x00;
-            int green = 0x00;
-            int blue = 0x00;
-            int alpha = 0x40;
-            if (x >= padding_size && padding_size + DRPAI_OUT_WIDTH > x)
-            {
-                if (0 < buffer[0] && buffer[0] <= NUM_CLASS_DEEPLABV3)
-                {
-                    detected_id[buffer[0] - 1] = 1;
-                    red = (color >> 16) & 0x0000FF;
-                    green = (color >> 8) & 0x0000FF;
-                    blue = color & 0x0000FF;
-                    alpha = 0x80;
-                }
-                buffer++;
-            }
-            pd[0] = blue;
-            pd[1] = green;
-            pd[2] = red;
-            pd[3] = alpha;
+        if (0 < buffer[0] && buffer[0] <= NUM_CLASS_DEEPLABV3)
+        {
+            red = (color >> 16) & 0x0000FF;
+            green = (color >> 8) & 0x0000FF;
+            blue = color & 0x0000FF;
+            alpha = 0x80;
         }
+
+        buffer++;
+        
+        seg_rgba_buffer[i+0] = blue;
+        seg_rgba_buffer[i+1] = green;
+        seg_rgba_buffer[i+2] = red;
+        seg_rgba_buffer[i+3] = alpha;
     }
+
+    // Resize RGBA segmentation map ( class_w x class_h x RGBA ) to Camera displya image size ( seg_w x seg_h x 4 )
+    cv::Mat seg_rgba = cv::Mat(class_w, class_h, CV_8UC4, &seg_rgba_buffer);
+    cv::Mat seg_rgba_gaussian;
+    cv::GaussianBlur(seg_rgba, seg_rgba_gaussian, {3, 3}, 0, 0);
+    cv::Mat seg_rgba_resized_gaussian;
+    cv::resize(seg_rgba_gaussian, seg_rgba_resized_gaussian, cv::Size(seg_w, seg_h), 0, 0, cv::INTER_LINEAR);
+
+    // Embed RGBA segmentation image ( seg_w x seg_h x 4 ) into Display buffer ( out_w * out_h * out_c )
+    if (is_padding)
+    {
+        uint32_t pad_top = (out_h - seg_h) / 2;
+        uint32_t pad_bottom = out_h - seg_h - pad_top;
+        uint32_t pad_left = (out_w - seg_w) / 2;
+        uint32_t pad_right = out_w - seg_w - pad_left;
+
+        cv::Mat dst_image;
+        copyMakeBorder(seg_rgba_resized_gaussian, dst_image, pad_top, pad_bottom, pad_left, pad_right, cv::BORDER_CONSTANT, cv::Scalar(0, 0, 0));
+        memcpy(overlay_buffer[buf_id], dst_image.data, out_w * out_h * out_c);
+    }
+    else
+    {
+        memcpy(overlay_buffer[buf_id], seg_rgba_resized_gaussian.data, out_w * out_h * out_c);
+    }
+
     int ret = capture->video_buffer_flush_dmabuf(capture->overlay_buf->idx, capture->overlay_buf->size);
     if (ret != 0)
     {
         return -1;
     }
-
+    return 0;
 }
 
 /*****************************************

@@ -1,64 +1,50 @@
-# PatchCore Demo
+# Surface Anomaly Detection
 
 ## Application: Overview
 This application is designed to detect anomalies in camera-captured images and image files and display an abnormality determination and abnormality heat map on the HDMI screen.
 
 This software could be useful primarily in manufacturing visual inspection situations.  
-The AI model used for the sample application is [PatchCore](https://arxiv.org/abs/2106.08265).
+The AI method used for the sample application is [PatchCore](https://arxiv.org/abs/2106.08265).
+>**Note:** In this document, PatchCore as an AI model is refferd to as PatchCore_resnet18.
 
-<img src=./img/inference_result_sample.png width=600>
-
-### Instruction
-1. Run following commands to download the necessary file.  
-
-    ```sh
-    cd PatchCoreDemo/<EXE_DIR>/deeplabv3_cam
-    wget <URL>/<SO_FILE>
-    ```
-
-| Board | `EXE_DIR` | URL | `SO_FILE` | File Location |
-| --- | --- | --- | --- | --- |
-| RZ/V2H EVK | exe |<span style="font-size: small">`https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/1.0.1/` | deploy.so | [Release v1.0.1](https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/1.0.1/deploy.so) |
-
-    └── PatchCoreDemo/  
-         ├── src/
-         ├── exe/
-         │   └── patch_core_demo/ <-- deploy.so
-         ├── etc/ 
-         ├── img/ 
-         └── README.md 
-
-2. Download Sample models and Data.
-```sh
-cd PatchCoreDemo/<EXE_DIR>
-wget https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/1.0.1/input_data_1.zip
-unzip input_data_1.zip
-```
+<image src=./img/app_patch_core_demo.gif width=640>
 
 ### Contents
 
 Folder structure  
 
-    └── PatchCoreDemo/
+    └── C03_surface_anomaly_detection/
          ├── src/
          │   └── toolchain/
-         │ 
          ├── exe/ 
          ├── img/ 
          └── README.md 
 
 ### Supported Product
-- RZ/V2H Evaluation Board Kit (RZ/V2H EVK)
-- RZ/V2H AI SDK v5.00
+| Product | Supported AI SDK version |
+|---|---|
+| RZ/V2H Evaluation Board Kit (RZ/V2H EVK) | RZ/V2H AI SDK v5.20 |
+| RZ/V2N Evaluation Board Kit (RZ/V2N EVK) | RZ/V2N AI SDK v5.00 |
 
 ### Input/Output
 <table>
     <tr>
-      <th style="text-align:center;">Input</th>
-      <th style="text-align:center;">Output</th>
+      <th>Board</th>
+      <th>Input</th>
+      <th>Output</th>
     </tr>
     <tr>
-      <td style="text-align:center;">MIPI camera</td>
+      <td style="text-align:center;" rowspan = "2">RZ/V2H EVK</td>
+      <td style="text-align:center;">USB camera</td>
+      <td style="text-align:center;">HDMI</td>
+    </tr>
+    <tr>
+      <td style="text-align:center;">Image files in png format</td>
+      <td style="text-align:center;">HDMI</td>
+    </tr>
+    <tr>
+      <td style="text-align:center;" rowspan="2">RZ/V2N EVK</td>
+      <td style="text-align:center;">USB camera</td>
       <td style="text-align:center;">HDMI</td>
     </tr>
     <tr>
@@ -93,8 +79,28 @@ Folder structure
       RZ/V2H EVK has HDMI port.</td>
     </tr>
     <tr>
-      <td>MIPI Camera</td>
-      <td>Used as a camera input source. Supported camera : e-CAM22_CURZH camera provided by [e-con Systems](https://www.e-consystems.com/renesas/sony-starvis-imx462-ultra-low-light-camera-for-renesas-rz-v2h.asp).<br>
+      <td>USB Camera</td>
+      <td>Used as a camera input source.<br>
+      Only used in Camera Mode.</td>
+    </tr>
+       <tr>
+      <td rowspan="4">RZ/V2N</td>
+      <td>RZ/V2N EVK</td>
+      <td>Evaluation Board Kit for RZ/V2N.</td>
+    </tr>
+    <tr>
+      <td>AC Adapter</td>
+      <td>USB Power Delivery adapter for the board power supply.<br>
+      100W is required.</td>
+    </tr>
+    <tr>
+      <td>HDMI Cable</td>
+      <td>Used to connect the HDMI Monitor and the board.<br>
+      RZ/V2N EVK has HDMI port.</td>
+    </tr>
+    <tr>
+      <td>USB camera</td>
+      <td>Used as a camera input source.<br>
       Only used in Camera Mode.</td>
     </tr>
     <tr>
@@ -109,7 +115,7 @@ Folder structure
     <tr>
       <td>microSD card</td>
       <td>Used as the filesystem.<br>
-      Must have over 4GB capacity of blank space.<br>
+      Must have over 16GB capacity of blank space.<br>
       Operating Environment: Transcend UHS-I microSD 300S 16GB</td>
     </tr>
     <tr>
@@ -139,27 +145,13 @@ Folder structure
 
 Connect the hardware as shown below.  
 
-|RZ/V2H EVK |
-|---|
-|<img src=./img/hw_conf_v2h.png width=600> |
+|RZ/V2H EVK |RZ/V2N EVK |
+|---|---|
+|<img src=./img/hw_conf_v2h.png width=600> |<img src=./img/hw_conf_v2n.png width=600> |
 
 >**Note 1:** When using the keyboard connected to RZ/V Evaluation Board, the keyboard layout and language are fixed to English.  
 **Note 2:** For RZ/V2H EVK, there are USB 2.0 and USB 3.0 ports.  
-MIPI camera needs to be connected to appropriate port based on its requirement.
-
-### Modify Linux Component
-Customization of the Linux environment by adding OSS (OpenMP) is required to run this application.
-To modify Linux component, you need to build AI SDK from source code.
-Follow these steps to build a Linux development environment.
-
-1. Implement Step.1 to Step.3 - 10 of the [How to build AI SDK](https://renesas-rz.github.io/rzv_ai_sdk/5.00/howto_build_aisdk_v2h.html).
-2. Add the following to the last line of ${YOCTO_WORK}/build/conf/local.conf.
-    ```sh
-    CORE_IMAGE_EXTRA_INSTALL += "libgomp libgomp-dev libgomp-staticdev"
-    ``` 
-3. Implement Step.3 - 11 to build the Linux Kernel image files (*.wic.bmap, *.wic.gz).
-4. Implement Step.3 - 12 to build the Cross Compiler Installer (*.sh).
-
+USB camera needs to be connected to appropriate port based on its requirement.
 
 ## Application: Build Stage
 
@@ -167,38 +159,34 @@ Follow these steps to build a Linux development environment.
 All pre-built binaries are provided.
 
 ### Prerequisites
-This section, it is necessary to have completed up to Step 5 of the [Getting Started Guide](https://renesas-rz.github.io/rzv_ai_sdk/5.00/getting_started.html) provided by Renesas.<br>
-
-1. Implement steps 1-3 of the [Getting Started Guide](https://renesas-rz.github.io/rzv_ai_sdk/5.00/getting_started.html) to obtain AI SDK v5.00 (RTK0EF0*SJ.zip).
-2. Implement Step 4 and extract the AI SDK v5.00 (RTK0EF0*SJ.zip).
-3. Replace the Linux Kernel image file (*.wic.bmap, *.wic.gz) Cross Compiler Installer (*sh) included with the extracted AI SDK v5.00 with the file built in [Modify Linux Component](#modify-linux-component).
-4. Implement step 5 and set up the AI SDK environment.
+This section, it is necessary to have completed up to Step 5 of the [Getting Started Guide](https://renesas-rz.github.io/rzv_ai_sdk/5.20/getting_started.html) provided by Renesas.<br>
 
 After completion of the above steps, the user is expected of following things.
 - AI SDK setup is done.
 - Following docker container is running on the host machine.
 
-    |Board | Docker container |
+    | Board | Docker container |
     |---|---|
-    |RZ/V2H EVK|`rzv2h_ai_sdk_container`  |
+    | RZ/V2H EVK and RZ/V2N EVK | `rzv2h_ai_sdk_container`  |
 
-    >**Note:** Docker environment is required for building the sample application. 
+    >**Note 1:** Docker environment is required for building the sample application.  
+    **Note 2:** Since RZ/V2N is a brother chip of RZ/V2H, the same environment can be used.
 
 ### Application File Generation
 1. On your host machine, copy the sources you want to build to the desired location. 
 
     1. Copy the source to be built to the `data` folder mounted in the Docker container.
 
-        > /drp-ai_tvm/data/PatchCoreDemo/src
+        > /drp-ai_tvm/data/C03_surface_anomaly_detection/src
     
 2. Run (or start) the docker container and open the bash terminal on the container.  
-  E.g., for RZ/V2H, use the `rzv2h_ai_sdk_container` as the name of container created from  `rzv2h_ai_sdk_image` docker image.  
+  E.g., for RZ/V2H and RZ/V2N, use the `rzv2h_ai_sdk_container` as the name of container created from  `rzv2h_ai_sdk_image` docker image.  
 
    > Note that all the build steps/commands listed below are executed on the docker container bash terminal.  
 
 3. Set your clone directory to the environment variable.  
     ```sh
-    export PROJECT_PATH=/drp-ai_tvm/data/PatchCoreDemo
+    export PROJECT_PATH=/drp-ai_tvm/data/C03_surface_anomaly_detection
     ```        
 4. Go to the application source code directory.  
     ```sh
@@ -233,34 +221,88 @@ const static std::string mem_bank_name = "resnet18_quantization_onnx_size224_par
 
 ## Application: Deploy Stage
 ### Prerequisites
-This section, it is necessary to have completed up to Step 7-1 of the [Getting Started Guide](https://renesas-rz.github.io/rzv_ai_sdk/5.00/getting_started_v2h.html#step7) provided by Renesas.<br>
-At this point, replace the Linux Kernel image file (*.wic.bmap, *.wic.gz) included with the eSD extracted in Step 7-1-B with the file built in [Modify Linux Component](#modify-linux-component).
+This section, it is necessary to have completed up to Step 7-1 of the [Getting Started Guide](https://renesas-rz.github.io/rzv_ai_sdk/5.20/getting_started_v2h.html#step7) provided by Renesas.
 
 After completion of the guide, the user is expected of following things.
 - microSD card setup is done.
 
 ### File Configuration
 
-For the ease of deployment all the deployables file and folders are provided in [exe](./exe) 
+For the ease of deployment all the deployables file and folders are provided in following folder. 
+
+| Board | `EXE_DIR` |
+|---|---|
+| RZ/V2H EVK and RZ/V2N EVK | [exe](./exe) |
+
+>**Note:** Since RZ/V2N is a brother chip of RZ/V2H, the same environment can be used.
 
 The folder contains following items. 
 |File | Details |
 |---|---|
 |patch_core_demo | Model object files for deployment.<br>Pre-processing Runtime Object files included. |
-|input_data_1 | Default memory bank binary file <br>and default image files for use in camera mode. |
 |app_patch_core_demo | application file. |
 
 ### Instruction
+1. Run following commands to download the necessary file.
+    <table>
+        <tr>
+          <th>Board</th>
+          <th><code>EXE_DIR</code></th>
+          <th>URL</th>
+          <th>File name</th>
+          <th>File Location</th>
+        </tr>
+        <tr>
+          <td rowspan="2">RZ/V2H EVK and RZ/V2N EVK</td>
+          <td rowspan="2">exe</td>
+          <td rowspan="2"><span style="font-size: small"><code>https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/2.0.0/</code></span></td>
+          <td>input_data_1.zip</td>
+          <td><a href="https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/2.0.0/input_data_1.zip">Release v2.0.0</a></td>
+        </tr>
+        <tr>
+          <td>C03_surface_anomaly_detection_deploy_tvm_v2h-v230.so</td>
+          <td><a href="https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/2.0.0/C03_surface_anomaly_detection_deploy_tvm_v2h-v230.so">Release v2.0.0</a></td>
+        </tr>
+    </table>
 
-1. Copy the following files to the `/home/root/tvm` directory of the rootfs (SD Card) for the board.
+    >**Note:** Since RZ/V2N is a brother chip of RZ/V2H, the same environment can be used.
+
+    - Sample models and Data
+        ```sh
+        cd C03_surface_anomaly_detection/<EXE_DIR>
+        wget https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/2.0.0/input_data_1.zip
+        unzip input_data_1.zip
+        ```
+        > It includes default memory bank binary file and default image files for use in camera mode.
+    - deploy.so
+        ```sh
+        cd C03_surface_anomaly_detection/<EXE_DIR>/patch_core_demo
+        wget https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/2.0.0/C03_surface_anomaly_detection_deploy_tvm_v2h-v230.so
+        ```
+
+2. Rename the `C03_surface_anomaly_detection_deploy_*.so` to `deploy.so`. 
+
+    ```sh
+    mv C03_surface_anomaly_detection_deploy_tvm_v2h-v230.so deploy.so
+    ```
+
+        └── C03_surface_anomaly_detection/  
+            ├── src/
+            ├── exe/
+            │   └── patch_core_demo/ <-- deploy.so
+            ├── etc/ 
+            ├── img/ 
+            └── README.md  
+
+3. Copy the following files to the `/home/root/tvm` directory of the rootfs (SD Card) for the board.
     |File | Details |
     |---|---|
     |All files in [exe](./exe)  directory | Including `deploy.so` file. |
     |`app_patch_core_demo` application file | Generated the file according to [Application File Generation](#application-file-generation) |
 
-2. Check if `libtvm_runtime.so` exists under `/usr/lib64` directory of the rootfs (SD card) on the board.
+4. Check if `libtvm_runtime.so` exists under `/usr/lib64` directory of the rootfs (SD card) on the board.
 
-3. Folder 
+5. Folder 
 structure in the rootfs (SD Card) would look like:
     ```sh
     ├── usr/
@@ -294,7 +336,7 @@ Generate a binary file for the memory bank according to [Memory Bank File Genera
 ## Application: Run Stage
 
 ### Prerequisites
-This section expects the user to have completed Step 7-3 of [Getting Started Guide](https://renesas-rz.github.io/rzv_ai_sdk/5.00/getting_started_v2h.html#step7-3) provided by Renesas. 
+This section expects the user to have completed Step 7-3 of [Getting Started Guide](https://renesas-rz.github.io/rzv_ai_sdk/5.20/getting_started_v2h.html#step7-3) provided by Renesas. 
 
 After completion of the guide, the user is expected of following things.  
 - The board setup is done.  
@@ -308,8 +350,10 @@ After completion of the guide, the user is expected of following things.
 
 2. Run the application.
     ```sh
+    chmod +x app_patch_core_demo
     ./app_patch_core_demo APP_MODE FILE_PATH
     ```
+    >**Note:** The `chmod` command is only necessary if the application does not have execution permission. 
     - The argument `APP_MODE` is chosen from `0`(Image mode) or `1`(Camera mode).
     - The argument `FILE_PATH` is the input data folder path.
 
@@ -324,6 +368,7 @@ After completion of the guide, the user is expected of following things.
     | Main screen (Image Mode) | <img src=./img/main_screen_image_mode.png width=300>|
     | Main screen (Camera Mode) | <img src=./img/main_screen_camera_mode.png width=300>|
     | Result screen | <img src=./img/result_screen.png width=300>|
+    >*Performance in the screenshot is for RZ/V2H EVK.
     
     The application window consists of two screens: the main screen and the results display screen.
     - On main screen, following information is displayed.  
@@ -344,6 +389,8 @@ After completion of the guide, the user is expected of following things.
     
 4. To terminate the application, press the Cross button in the upper right corner of the main screen.
 
+>**Note:** Since RZ/V2N is a brother chip of RZ/V2N, the same execution environment is used, which causes inconsistency in display contents,  
+i.e, RZ/V2N application log contains "RZ/V2H". This will be solved in the future version.
 
 ## Application: Configuration 
 
@@ -352,15 +399,43 @@ After completion of the guide, the user is expected of following things.
 - Dataset: [Unique](https://github.com/ComputermindCorp/assets/releases/download/v1.0.0/wood.zip)
   
   Input size: 1x3x224x224  
-  Output1 size: 1x128x28x28
+  Output1 size: 1x128x28x28  
   Output2 size: 1x256x14x14 
 
 ### AI inference time
-|Processing | time|
-|---|---|
-|Pre-processing | 2.2ms |
-|Inference | 2.1ms |
-|Post-processing | 31.5ms |
+<table>
+    <tr>
+      <th>Board</th>
+      <th>Processing</th>
+      <th>time</th>
+    </tr>
+    <tr>
+      <td rowspan="3">RZ/V2H</td>
+      <td>PatchCore_resnet18 Pre-processing</td>
+      <td>Approximately 2.6ms</td>
+    </tr>
+    <tr>
+      <td>PatchCore_resnet18 Inference</td>
+      <td>Approximately 2.2ms</td>
+    </tr>
+    <tr>
+      <td>PatchCore_resnet18 Post-processing</td>
+      <td>Approximately 31.5ms</td>
+    </tr>
+    <tr>
+      <td rowspan="3">RZ/V2N</td>
+      <td>PatchCore_resnet18 Pre-processing</td>
+      <td>Approximately 2.2ms</td>
+    </tr>
+    <tr>
+      <td>PatchCore_resnet18 Inference</td>
+      <td>Approximately 3.5ms</td>
+    </tr>
+    <tr>
+      <td>PatchCore_resnet18 Post-processing</td>
+      <td>Approximately 31.5ms</td>
+    </tr>
+</table>
 
 ### Processing
 
@@ -373,13 +448,22 @@ After completion of the guide, the user is expected of following things.
 
 ### Image buffer size
 
-| Camera capture buffer size|HDMI output buffer size|
-|---|---|
-| FHD (1920x1080) in YUYV format  | FHD (1920x1080) in BGRA format  |
+| Board | Camera capture buffer size|HDMI output buffer size|
+|---|---|---|
+| RZ/V2H EVK and RZ/V2N EVK | VGA (640x480) in YUYV format  | FHD (1920x1080) in BGRA format  |
+
+## Reference
+- For RZ/V2H EVK and RZ/V2N EVK, this application supports USB camera only with 640x480 resolution.  
+FHD resolution is suopported by e-CAM22_CURZH camera(MIPI).  
+Please refer to following URL for how to change camera input to MIPI camera.  
+https://renesas-rz.github.io/rzv_ai_sdk/latest/about-applications.  
+
+- When using e-CAM22_CURZH camera(MIPI), it is necessary to recompile AI model.
 
 ## License
 For AI model, see following directory..  
-| AI Model | License directory|
-|---|---|
-| PatchCore | [`exe/licenses`](exe/licenses/)  |
+| Board | AI Model | License directory|
+|---|---|---|
+| RZ/V2H EVK | PatchCore_resnet18 | [`exe/licenses`](exe/licenses/)  |
+| RZ/V2N EVK | PatchCore_resnet18 | [`exe/licenses`](exe/licenses/)  |
 

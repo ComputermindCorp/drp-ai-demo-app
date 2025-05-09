@@ -1,10 +1,10 @@
 /***********************************************************************************************************************
-* Copyright (C) 2024 Renesas Electronics Corporation. All rights reserved.
+* Copyright (C) 2024 Computermind Corp. All rights reserved.
 ***********************************************************************************************************************/
 /***********************************************************************************************************************
 * File Name    : define_color.h
 * Version      : 1.00
-* Description  : RZ/V2H DRP-AI Sample Application for River Level Monitor with MIPI/USB Camera
+* Description  : RZ/V2H DRP-AI Sample Application for PyTorch DeepLabv3 + Megvii-Base Detection YOLOX with MIPI/USB Camera
 ***********************************************************************************************************************/
 #ifndef DEFINE_COLOR_H
 #define DEFINE_COLOR_H

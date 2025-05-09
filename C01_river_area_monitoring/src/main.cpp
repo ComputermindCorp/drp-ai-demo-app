@@ -1,6 +1,27 @@
-/***********************************************************************************************************************
-* Copyright (C) 2024 Renesas Electronics Corporation. All rights reserved.
-***********************************************************************************************************************/
+/*
+ * Original Code (C) Copyright Edgecortix, Inc. 2022
+ * Modified Code (C) Copyright Renesas Electronics Corporation 2023
+ * Modified Code (C) Copyright Computermind Corp 2024
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
+*/
+
 /***********************************************************************************************************************
 * File Name    : main.cpp
 * Version      : 1.00
@@ -53,7 +74,7 @@ static atomic<uint8_t> hdmi_obj_ready   (0);
 
 /*Global Variables*/
 static uint8_t postproc_data[DEEPLABV3_MODEL_IN_W * DEEPLABV3_MODEL_IN_H];
-static uint8_t postproc_data1[DRPAI_OUT_WIDTH * DRPAI_OUT_HEIGHT];
+// static uint8_t postproc_data1[DRPAI_OUT_WIDTH * DRPAI_OUT_HEIGHT];
 
 static float drpai_output_buf0[num_inf_out];
 static float  drpai_output_buf1[DEEPLABV3_MODEL_IN_W * DEEPLABV3_MODEL_IN_H*DEEPLABV3_MODEL_OUT_NUM*(NUM_CLASS_DEEPLABV3-1)];
@@ -332,6 +353,19 @@ void R_Post_Proc_DeepLabV3(float* floatarr)
     int iOut = 0;
     int iBitArray[NUM_CLASS_DEEPLABV3];
     string class_name = CLASS_NAME_RIVER;
+
+    /* Transpose TVM output CHW -> HWC to raise cache utilization efficiency 
+       when scanning the probabilities along "C" axis to determine the class index for each pixels. */
+    float tmp_output_buf[DEEPLABV3_MODEL_IN_W * DEEPLABV3_MODEL_IN_H][NUM_CLASS];
+    for (int ci = 0; ci < NUM_CLASS; ci++) 
+    {
+        for (int i = 0; i < DEEPLABV3_MODEL_IN_W * DEEPLABV3_MODEL_IN_H; i++) 
+        {
+            float current_value = floatarr[ci * DEEPLABV3_MODEL_IN_W * DEEPLABV3_MODEL_IN_H + i];
+            tmp_output_buf[i][ci] = current_value;
+        }
+    }
+
     /*Convert output probabilities to label indice array*/
     for (int i = 0; i < DEEPLABV3_MODEL_IN_W * DEEPLABV3_MODEL_IN_H; i++)
     {
@@ -348,20 +382,15 @@ void R_Post_Proc_DeepLabV3(float* floatarr)
         
         postproc_data[i] = tmp_max_idx;
     }
-    /*Resize postproc_data to 1920*1080*/
-    cv::Mat input = cv::Mat(DEEPLABV3_MODEL_IN_W, DEEPLABV3_MODEL_IN_H, CV_8UC1, postproc_data);
-    cv::Mat output;
-    cv::resize(input, output, cv::Size(DRPAI_OUT_WIDTH,DRPAI_OUT_HEIGHT), 0, 0, cv::INTER_NEAREST);
-    memcpy(postproc_data1, output.reshape(1,1).data, DRPAI_OUT_WIDTH*DRPAI_OUT_HEIGHT);
     
     for(i=0;i<NUM_CLASS_DEEPLABV3;i++){
        iBitArray[i]=0;
     }
     
-    memcpy(output_mask, postproc_data1, DRPAI_OUT_WIDTH * DRPAI_OUT_HEIGHT * sizeof(uint8_t));
+    memcpy(output_mask, postproc_data, DEEPLABV3_MODEL_IN_W * DEEPLABV3_MODEL_IN_H * sizeof(uint8_t));
     make_hit=100;  // OK
     uint32_t river_count = 0;
-    for(i=0;i< DRPAI_OUT_WIDTH * DRPAI_OUT_HEIGHT;i++){
+    for(i=0;i< DEEPLABV3_MODEL_IN_W * DEEPLABV3_MODEL_IN_H;i++){
         if (REVER_LABEL_NUM <= output_mask[i]){
             iOut = output_mask[i];
             iBitArray[iOut]=1;
@@ -804,7 +833,11 @@ int8_t print_result(Image* img)
     }
 
     /* Draw Segmentation on RGB image.*/
-    img->draw_sem_seg(&output_mask[0],signal_color,capture);
+    int ret = img->draw_sem_seg(&output_mask[0], signal_color, capture, DEEPLABV3_MODEL_IN_W, DEEPLABV3_MODEL_IN_H, DRPAI_OUT_WIDTH, DRPAI_OUT_HEIGHT, CAM_RESIZED_PADDING);
+    if (ret != 0)
+    {
+        return -1;
+    }
 
 #if (0) == INF_YOLOX_SKIP
     /* Draw bounding box on image. */
@@ -1481,10 +1514,6 @@ void *R_Img_Thread(void *threadid)
     int8_t ret = 0;
     double img_proc_time = 0;
     int32_t disp_cnt = 0;
-    bool padding = false;
-#ifdef CAM_INPUT_VGA
-    padding = true;
-#endif // CAM_INPUT_VGA
     timespec start_time;
     timespec end_time;
 
@@ -1519,10 +1548,15 @@ void *R_Img_Thread(void *threadid)
             img.convert_format();
 
             /* Convert output image size. */
-            img.convert_size(CAM_IMAGE_WIDTH, DRPAI_OUT_WIDTH, padding);
+            img.convert_size(CAM_IMAGE_WIDTH, DRPAI_OUT_WIDTH, CAM_IMAGE_HEIGHT, DRPAI_OUT_HEIGHT, CAM_RESIZED_PADDING);
 
             /*displays AI Inference Results on display.*/
-            print_result(&img);
+            ret = print_result(&img);
+            if (0 != ret)
+            {
+                fprintf(stderr, "[ERROR] Failed to displays AI Inference Results on display.\n");
+                goto err;
+            }
 
             buf_id = img.get_buf_id();
             img_obj_ready.store(0);

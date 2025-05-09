@@ -1,10 +1,10 @@
 /***********************************************************************************************************************
-* Copyright (C) 2023 Renesas Electronics Corporation. All rights reserved.
+* Copyright (C) 2024 Computermind Corp. All rights reserved.
 ***********************************************************************************************************************/
 /***********************************************************************************************************************
 * File Name    : capture.cpp
 * Version      : 1.00
-* Description  : for RZ/V2H DRP-AI Sample Application with MIPI/USB Camera
+* Description  : for RZ/V2H DRP-AI Sample Application for PyTorch ResNet with MIPI/USB Camera or Image
 ***********************************************************************************************************************/
 
 /*****************************************
@@ -123,22 +123,33 @@ cv::Mat Capture::convert_inf_img(int mode)
     cv::Mat src = img_buffer.clone();
     if(mode != 0)
     {
+#ifdef CAM_INPUT_VGA
+        int x = (src.cols - DRPAI_INPUT_WIDTH) / 2;
+        int y = (src.rows - DRPAI_INPUT_HEIGHT) / 2;
+        cv::Rect roi(cv::Point(x, y), cv::Size(DRPAI_INPUT_WIDTH, DRPAI_INPUT_HEIGHT));
+        cv::Mat resize = src(roi);
+        src.release();
+#else /* CAM_INPUT_FHD */
         int x = (src.cols - 1024) / 2;
         int y = (src.rows - 1024) / 2;
         cv::Rect roi(cv::Point(x, y), cv::Size(1024, 1024));
         cv::Mat crop = src(roi);
         cv::Mat resize;
-        cv::resize(crop, resize, cv::Size(1024 / 2, 1024 / 2));
+        cv::resize(crop, resize, cv::Size(DRPAI_INPUT_WIDTH, DRPAI_INPUT_HEIGHT));
         src.release();
         crop.release();
+#endif /* CAM_INPUT_VGA */
         cv::cvtColor(resize, resize, cv::COLOR_BGRA2RGB);
         return resize.clone();
     }
     else
     {
+        cv::Mat resize;
+        cv::resize(src, resize, cv::Size(DRPAI_INPUT_WIDTH, DRPAI_INPUT_HEIGHT));
         cv::Mat dest;
-        cv::cvtColor(src, dest, cv::COLOR_BGRA2RGB);
+        cv::cvtColor(resize, dest, cv::COLOR_BGRA2RGB);
         src.release();
+        resize.release();
         return dest.clone();
     }
 }

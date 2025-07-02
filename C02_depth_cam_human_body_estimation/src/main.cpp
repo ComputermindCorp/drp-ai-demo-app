@@ -2106,6 +2106,8 @@ err:
 hdmi_end:
     /*To terminate the loop in Capture Thread.*/
     hdmi_obj_ready.store(0);
+    /* Exit waylad */
+    wayland.exit();
     printf("Display Thread Terminated\n");
     pthread_exit(NULL);
 }
@@ -2627,8 +2629,6 @@ end_threads:
         sem_destroy(&terminate_req_sem);
     }
 
-    /* Exit waylad */
-    wayland.exit();
     goto end_close_camera;
 
 end_close_camera:

@@ -139,9 +139,9 @@ const static std::string pre_dir_hrnet = model_dir_hrnet + "/preprocess";
 #define IMAGE_IO_SIZE_TYPE          (0)
 /*Cropping Image Related*/
 #ifdef CAM_INPUT_VGA
-#define CROPPED_IMAGE_WIDTH         (270)
+#define CROPPED_IMAGE_WIDTH         (360)
 #elif defined(CAM_INPUT_HD) /* CAM_INPUT_HD */
-#define CROPPED_IMAGE_WIDTH         (560)
+#define CROPPED_IMAGE_WIDTH         (540)
 #else /* CAM_INPUT_FHD */
 #define CROPPED_IMAGE_WIDTH         (810)
 #endif
@@ -152,10 +152,10 @@ const static std::string pre_dir_hrnet = model_dir_hrnet + "/preprocess";
 #define NUM_OUTPUT_C                (17)
 #define INF_OUT_SIZE                (NUM_OUTPUT_W*NUM_OUTPUT_H*NUM_OUTPUT_C)
 #ifdef CAM_INPUT_VGA
-#define OUTPUT_LEFT                 (185)
+#define OUTPUT_LEFT                 (140)
 #define OUTPUT_TOP                  (0)
 #elif defined(CAM_INPUT_HD) /* CAM_INPUT_HD */
-#define OUTPUT_LEFT                 (360)
+#define OUTPUT_LEFT                 (370)
 #define OUTPUT_TOP                  (0)
 #else /* CAM_INPUT_FHD */
 #define OUTPUT_LEFT                 (555)

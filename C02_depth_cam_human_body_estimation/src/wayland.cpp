@@ -175,8 +175,6 @@ GLuint Wayland::initProgramObject(SShader* pShader)
  ******************************************/
 static int8_t initEGLDisplay(EGLNativeDisplayType nativeDisplay, EGLNativeWindowType nativeWindow, EGLDisplay* eglDisplay, EGLSurface* eglSurface)
 {
-    int8_t ret = 0;
-
     EGLint number_of_config;
     EGLint config_attribs[] = {
         EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
@@ -240,7 +238,6 @@ static int8_t initEGLDisplay(EGLNativeDisplayType nativeDisplay, EGLNativeWindow
  ******************************************/
 static int8_t initWaylandDisplay(struct wl_display** wlDisplay, struct wl_surface** wlSurface)
 {
-    int8_t ret = 0;
     struct WaylandGlobals globals = { 0 };
 
     *wlDisplay = wl_display_connect(NULL);
@@ -347,7 +344,7 @@ uint8_t Wayland::init(uint32_t idx, uint32_t w, uint32_t h, uint32_t c, bool ove
     // enable Alpha Blending
     if (img_overlay == true){
         glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
     }
 
     glUniform1i(glGetUniformLocation(sShader.unProgram, "texture"), 0);

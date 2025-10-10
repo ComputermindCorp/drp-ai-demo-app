@@ -526,6 +526,6 @@ https://renesas-rz.github.io/rzv_ai_sdk/latest/about-applications.
 For AI model, see following directory..  
 | Board | AI Model | License directory|
 |---|---|---|
-| RZ/V2H EVK | PatchCore_resnet18 | [`exe_v2h/licenses`](exe/licenses/)  |
-| RZ/V2N EVK | PatchCore_resnet18 | [`exe_v2n/licenses`](exe/licenses/)  |
+| RZ/V2H EVK | PatchCore_resnet18 | [`exe_v2h/licenses`](exe_v2h/licenses/)  |
+| RZ/V2N EVK | PatchCore_resnet18 | [`exe_v2n/licenses`](exe_v2n/licenses/)  |
 

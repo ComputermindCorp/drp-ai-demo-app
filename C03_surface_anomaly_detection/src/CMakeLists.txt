@@ -1,5 +1,5 @@
 # CMakeList.txt : CMake projects in app_patch_core_demo
-cmake_minimum_required (VERSION 3.10)
+cmake_minimum_required (VERSION 3.12)
 project(app_patch_core_demo)
 set(CMAKE_CXX_STANDARD 17)
 
@@ -16,11 +16,28 @@ include_directories(${TVM_ROOT}/../how-to/sample_app_v2h/common_files)
 
 set(TVM_RUNTIME_LIB ${TVM_ROOT}/build_runtime/libtvm_runtime.so)
 set(EXE_NAME app_patch_core_demo)
+set(PRODUCT $ENV{PRODUCT})
+
+if(PRODUCT STREQUAL "V2H")
+    include_directories(${CMAKE_SOURCE_DIR}/drp-ai_tvm_v230)
+    file(GLOB SOURCE *.cpp *.h ${CMAKE_SOURCE_DIR}/drp-ai_tvm_v230/*.cpp ${CMAKE_SOURCE_DIR}/drp-ai_tvm_v230/*.h)
+    list(REMOVE_ITEM SOURCE ${CMAKE_SOURCE_DIR}/wayland_scarthgap.cpp)
+    add_definitions(-DV2H)
+    message("-- PRODUCT [V2H]") 
+elseif(PRODUCT STREQUAL "V2N")
+    include_directories(${CMAKE_SOURCE_DIR}/drp-ai_tvm_v251)
+    file(GLOB SOURCE *.cpp *.h ${CMAKE_SOURCE_DIR}/drp-ai_tvm_v251/*.cpp ${CMAKE_SOURCE_DIR}/drp-ai_tvm_v251/*.h)
+    include_directories(${CMAKE_SYSROOT}/usr/src/debug/gstreamer1.0-plugins-base/1.22.12/gst-libs/gst/gl)
+    list(REMOVE_ITEM SOURCE ${CMAKE_SOURCE_DIR}/wayland.cpp)
+    list(APPEND SOURCE ${CMAKE_SYSROOT}/usr/src/debug/gstreamer1.0-plugins-base/1.22.12/gst-libs/gst/gl/xdg-shell-client-protocol.c)
+    add_definitions(-DV2H -DV2N)
+    message("-- PRODUCT [V2N]")
+endif()
+
 set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} -fopenmp")
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS} -fopenmp")
 set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
 
-file(GLOB SOURCE *.cpp *.h)
 add_executable (${EXE_NAME}
 ${SOURCE}
 )
@@ -57,3 +74,13 @@ endif()
 # endif()
 
 target_link_libraries(${EXE_NAME} ${TVM_RUNTIME_LIB})
+target_link_libraries(${EXE_NAME} ${OpenCV_LIBS})
+target_compile_options(${EXE_NAME} PRIVATE -Wall -D DEBUG_LOG)
+target_compile_definitions(${EXE_NAME} PRIVATE -DIMAGE_MODE)
+if(PRODUCT STREQUAL "V2H")
+    target_compile_definitions(${EXE_NAME} PRIVATE V2H)
+endif()
+if(PRODUCT STREQUAL "V2N")
+    target_compile_definitions(${EXE_NAME} PRIVATE V2N)
+endif()
+

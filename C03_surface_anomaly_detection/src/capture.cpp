@@ -4,7 +4,7 @@
 /***********************************************************************************************************************
 * File Name    : capture.cpp
 * Version      : 1.00
-* Description  : for RZ/V2H DRP-AI Sample Application for PyTorch ResNet with MIPI/USB Camera or Image
+* Description  : RZ/V2H and RZ/V2N DRP-AI Sample Application for PyTorch ResNet with MIPI/USB Camera or Image
 ***********************************************************************************************************************/
 
 /*****************************************
@@ -358,6 +358,26 @@ int8_t Capture::start_camera()
     int32_t n = 0;
     
 #if INPUT_CAM_TYPE == 1
+#ifdef V2N
+    std::string sw_cmd1 = format("media-ctl -d /dev/media0 -V \"'csi-16010400.csi21':1 [fmt:UYVY8_2X8/%s field:none]\"", MIPI_CAM_RES);
+    std::string sw_cmd2 = format("media-ctl -d /dev/media0 -V \"'imx462 1-001f':0 [fmt:UYVY8_2X8/%s field:none]\"", MIPI_CAM_RES);
+    std::string sw_cmd3 = format("media-ctl -d /dev/media0 -V \"'cru-ip-16010000.cru1':0 [fmt:UYVY8_2X8/%s field:none]\"", MIPI_CAM_RES);
+    std::string sw_cmd4 = format("media-ctl -d /dev/media0 -V \"'cru-ip-16010000.cru1':1 [fmt:UYVY8_2X8/%s field:none]\"", MIPI_CAM_RES);
+    const char* commands[9] =
+    {
+        "v4l2-ctl -d 0 -c framerate=30",
+        "v4l2-ctl -d 0 -c white_balance_auto_preset=0",
+        "media-ctl -d /dev/media0 -r",
+        "media-ctl -d /dev/media0 -l \"'csi-16010400.csi21':1 -> 'cru-ip-16010000.cru1':0 [1]\"",
+        "media-ctl -d /dev/media0 -l \"'cru-ip-16010000.cru1':1 -> 'CRU output':0 [1]\"",
+        sw_cmd1.c_str(),
+        sw_cmd2.c_str(),
+        sw_cmd3.c_str(),
+        sw_cmd4.c_str(),
+    };
+    int cmd_count = 9;
+
+#else  // not V2N
     std::string sw_cmd1 = format("media-ctl -d /dev/media0 -V \"\'rzg2l_csi2 16000400.csi20\':1 [fmt:UYVY8_2X8/%s field:none]\"", MIPI_CAM_RES);
     std::string sw_cmd2 = format("media-ctl -d /dev/media0 -V \"\'imx462 0-001f\':0 [fmt:UYVY8_2X8/%s field:none]\"", MIPI_CAM_RES);
     const char* commands[6] =
@@ -366,11 +386,14 @@ int8_t Capture::start_camera()
         "v4l2-ctl -d 0 -c white_balance_auto_preset=0",
         "media-ctl -d /dev/media0 -r",
         "media-ctl -d /dev/media0 -l \"\'rzg2l_csi2 16000400.csi20\':1 -> \'CRU output\':0 [1]\"",
-        &sw_cmd1[0],
-        &sw_cmd2[0],
+        sw_cmd1.c_str(),
+        sw_cmd2.c_str(),
     };
+    int cmd_count = 6;
+#endif
+
     /* media-ctl command */
-    for (i = 0; i < 6; i++)
+    for (i = 0; i < cmd_count; i++)
     {
         printf("%s\n", commands[i]);
         ret = system(commands[i]);
@@ -397,14 +420,14 @@ int8_t Capture::start_camera()
         printf("failed to init_camera_fmt\n");
         return ret;
     }
-    
+
     ret = init_buffer();
-    if (0 != ret) 
+    if (0 != ret)
     {
         printf("failed to init_buffer\n");
         return ret;
     }
-   
+
     for (n =0; n < CAP_BUF_NUM; n++)
     {
         dma_buf[n] = (camera_dma_buffer*)malloc(sizeof(camera_dma_buffer[n]));

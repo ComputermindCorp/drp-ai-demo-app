@@ -4,7 +4,7 @@
 /***********************************************************************************************************************
 * File Name    : camera.cpp
 * Version      : 1.00
-* Description  : RZ/V2H DRP-AI Sample Application for PyTorch DeepLabv3 + Megvii-Base Detection YOLOX with MIPI/USB Camera
+* Description  : RZ/V2H and RZ/V2N DRP-AI Sample Application for PyTorch DeepLabv3 + Megvii-Base Detection YOLOX with MIPI/USB Camera
 ***********************************************************************************************************************/
 
 /*****************************************
@@ -60,6 +60,26 @@ int8_t Camera::start_camera()
     uint8_t* word_ptr;
     
 #if INPUT_CAM_TYPE == 1
+#ifdef V2N
+    std::string sw_cmd1 = format("media-ctl -d /dev/media0 -V \"'csi-16010400.csi21':1 [fmt:UYVY8_2X8/%s field:none]\"", MIPI_CAM_RES);
+    std::string sw_cmd2 = format("media-ctl -d /dev/media0 -V \"'imx462 1-001f':0 [fmt:UYVY8_2X8/%s field:none]\"", MIPI_CAM_RES);
+    std::string sw_cmd3 = format("media-ctl -d /dev/media0 -V \"'cru-ip-16010000.cru1':0 [fmt:UYVY8_2X8/%s field:none]\"", MIPI_CAM_RES);
+    std::string sw_cmd4 = format("media-ctl -d /dev/media0 -V \"'cru-ip-16010000.cru1':1 [fmt:UYVY8_2X8/%s field:none]\"", MIPI_CAM_RES);
+    const char* commands[9] =
+    {
+        "v4l2-ctl -d 0 -c framerate=30",
+        "v4l2-ctl -d 0 -c white_balance_auto_preset=0",
+        "media-ctl -d /dev/media0 -r",
+        "media-ctl -d /dev/media0 -l \"'csi-16010400.csi21':1 -> 'cru-ip-16010000.cru1':0 [1]\"",
+        "media-ctl -d /dev/media0 -l \"'cru-ip-16010000.cru1':1 -> 'CRU output':0 [1]\"",
+        sw_cmd1.c_str(),
+        sw_cmd2.c_str(),
+        sw_cmd3.c_str(),
+        sw_cmd4.c_str(),
+    };
+    int cmd_count = 9;
+
+#else  // not V2N
     std::string sw_cmd1 = format("media-ctl -d /dev/media0 -V \"\'rzg2l_csi2 16000400.csi20\':1 [fmt:UYVY8_2X8/%s field:none]\"", MIPI_CAM_RES);
     std::string sw_cmd2 = format("media-ctl -d /dev/media0 -V \"\'imx462 0-001f\':0 [fmt:UYVY8_2X8/%s field:none]\"", MIPI_CAM_RES);
     const char* commands[6] =
@@ -68,11 +88,14 @@ int8_t Camera::start_camera()
         "v4l2-ctl -d 0 -c white_balance_auto_preset=0",
         "media-ctl -d /dev/media0 -r",
         "media-ctl -d /dev/media0 -l \"\'rzg2l_csi2 16000400.csi20\':1 -> \'CRU output\':0 [1]\"",
-        &sw_cmd1[0],
-        &sw_cmd2[0],
+        sw_cmd1.c_str(),
+        sw_cmd2.c_str(),
     };
+    int cmd_count = 6;
+#endif
+
     /* media-ctl command */
-    for (i = 0; i < 6; i++)
+    for (i = 0; i < cmd_count; i++)
     {
         printf("%s\n", commands[i]);
         ret = system(commands[i]);
@@ -85,7 +108,7 @@ int8_t Camera::start_camera()
         }
     }
 
-#endif  /* INPUT_CAM_TYPE */
+#endif /* INPUT_CAM_TYPE */
 
     ret = open_camera_device();
     if (0 != ret)
@@ -163,7 +186,7 @@ int8_t Camera::start_camera()
         fprintf(stderr, "[ERROR] Failed to Allocate DMA buffer for the capture_buf\n");
         goto err_end;
     }
-    
+
     drpai_buf = (camera_dma_buffer*)malloc(sizeof(camera_dma_buffer));
     if (NULL == drpai_buf)
     {
@@ -177,7 +200,7 @@ int8_t Camera::start_camera()
         fprintf(stderr, "[ERROR] Failed to Allocate DMA buffer for the drpai_buf\n");
         goto err_end;
     }
-    
+
     for (n =0; n < CAP_BUF_NUM; n++)
     {
         dma_buf[n] = (camera_dma_buffer*)malloc(sizeof(camera_dma_buffer[n]));
@@ -306,6 +329,7 @@ int8_t Camera::close_camera()
         free(dma_buf[i]);
         dma_buf[i] = NULL;
     }
+
     close(m_fd);
     return 0;
 }
@@ -459,6 +483,7 @@ int8_t Camera::open_camera_device()
         /* Check device is valid (Query Device information) */
         memset(&fmt, 0, sizeof(fmt));
         ret = xioctl(m_fd, VIDIOC_QUERYCAP, &fmt);
+
         if (-1 == ret)
         {
             return -1;
@@ -592,6 +617,7 @@ int8_t Camera::save_bin(std::string filename)
 
     /* Get data from buffer and write to binary file */
     ret = fwrite((uint8_t *)dma_buf[buf_capture.index]->mem, sizeof(uint8_t), dma_buf[buf_capture.index]->size, fp);
+
     if (!ret)
     {
         fclose(fp);
@@ -754,4 +780,3 @@ void Camera::set_c(int32_t c)
     camera_color= c;
     return;
 }
-

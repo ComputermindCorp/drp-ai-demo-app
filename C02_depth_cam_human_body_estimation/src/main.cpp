@@ -25,7 +25,7 @@
 /***********************************************************************************************************************
 * File Name    : main.cpp
 * Version      : 1.00
-* Description  : RZ/V2H DRP-AI Sample Application for MMPose HRNet + Megvii-Base Detection YOLOX with Depth Camera
+* Description  : RZ/V2H and RZ/V2N DRP-AI Sample Application for MMPose HRNet + Megvii-Base Detection YOLOX with Depth Camera
 ***********************************************************************************************************************/
 
 /*****************************************
@@ -2372,15 +2372,18 @@ int32_t main(int32_t argc, char * argv[])
     InOutDataType input_data_type;
     bool runtime_status = false;
 
-    printf("RZ/V2H DRP-AI Sample Application\n");
+    printf("RZ/V2H and RZ/V2N DRP-AI Sample Application\n");
     printf("Model : MMPose HRNet | %s  \n", AI1_DESC_NAME);
 #if (0) == INF_YOLOX_SKIP
     printf("Model : Megvii-Base Detection YOLOX | %s\n", AI0_DESC_NAME);
 #endif
     printf("Input : %s\n", INPUT_CAM_NAME);
     spdlog::info("************************************************");
-    spdlog::info("  RZ/V2H DRP-AI Sample Application");
-    spdlog::info("  Model : MMPose HRNet with YOLOX | {} {}", AI1_DESC_NAME,AI0_DESC_NAME);
+    spdlog::info("  RZ/V2H and RZ/V2N DRP-AI Sample Application");
+    spdlog::info("  Model : MMPose HRNet | {}", AI1_DESC_NAME);
+#if (0) == INF_YOLOX_SKIP
+    spdlog::info("  Model : Megvii-Base Detection YOLOX | {}", AI0_DESC_NAME);
+#endif
     spdlog::info("  Input : {}", INPUT_CAM_NAME);
     spdlog::info("************************************************");
     printf("Argument : <mirror_flip_display_mode> = %d\n", flip_mode);

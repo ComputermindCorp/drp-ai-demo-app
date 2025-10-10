@@ -25,7 +25,7 @@
 /***********************************************************************************************************************
 * File Name    : main.cpp
 * Version      : 1.00
-* Description  : RZ/V2H DRP-AI Sample Application for PyTorch DeepLabv3 + Megvii-Base Detection YOLOX with MIPI/USB Camera
+* Description  : RZ/V2H and RZ/V2N DRP-AI Sample Application for PyTorch DeepLabv3 + Megvii-Base Detection YOLOX with MIPI/USB Camera
 ***********************************************************************************************************************/
 
 /*****************************************
@@ -1961,14 +1961,14 @@ int32_t main(int32_t argc, char * argv[])
     InOutDataType input_data_type;
     bool runtime_status = false;
 
-    printf("RZ/V2H DRP-AI Sample Application\n");
+    printf("RZ/V2H and RZ/V2N DRP-AI Sample Application\n");
     printf("Model : PyTorch DeepLabv3 | %s  \n", model_dir_deeplabv3.c_str());
 #if (0) == INF_YOLOX_SKIP
     printf("Model : Megvii-Base Detection YOLOX | %s\n", model_dir_yolox.c_str());
 #endif
     printf("Input : %s\n", INPUT_CAM_NAME);
     spdlog::info("************************************************");
-    spdlog::info("  RZ/V2H DRP-AI Sample Application");
+    spdlog::info("  RZ/V2H and RZ/V2N DRP-AI Sample Application");
     spdlog::info("  Model : PyTorch DeepLabv3 with YOLOX | {} {}", model_dir_deeplabv3.c_str(),model_dir_yolox.c_str());
     spdlog::info("  Input : {}", INPUT_CAM_NAME);
     spdlog::info("************************************************");

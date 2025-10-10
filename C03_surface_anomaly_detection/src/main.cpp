@@ -25,7 +25,7 @@
 /***********************************************************************************************************************
 * File Name    : main.cpp
 * Version      : 1.00
-* Description  : RZ/V2H DRP-AI Sample Application for PyTorch ResNet with MIPI/USB Camera or Image
+* Description  : RZ/V2H and RZ/V2N DRP-AI Sample Application for PyTorch ResNet with MIPI/USB Camera or Image
 ***********************************************************************************************************************/
 /*****************************************
  * includes
@@ -540,7 +540,7 @@ int main(int argc, char *argv[])
     }
 
     printf("************************************************\n");
-    printf("RZ/V2H DRP-AI Sample Application\n");
+    printf("RZ/V2H and RZ/V2N DRP-AI Sample Application\n");
     printf("Model : PyTorch ResNet    | %s\n", model_dir.c_str());
     printf("Input : %s\n", INPUT_CAM_NAME);
     printf("************************************************\n");

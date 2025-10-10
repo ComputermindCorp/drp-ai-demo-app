@@ -4,7 +4,7 @@
 /***********************************************************************************************************************
 * File Name    : define.h
 * Version      : 1.00
-* Description  : RZ/V2H DRP-AI Sample Application for MMPose HRNet + Megvii-Base Detection YOLOX with Depth Camera
+* Description  : RZ/V2H and RZ/V2N DRP-AI Sample Application for MMPose HRNet + Megvii-Base Detection YOLOX with Depth Camera
 ***********************************************************************************************************************/
 
 #ifndef DEFINE_MACRO_H

@@ -19,7 +19,8 @@ Folder structure
          │      ├── spdlog/
          │      └── librealsense/
          │          └──lib/
-         ├── exe/ 
+         ├── exe_v2h/
+         ├── exe_v2n/
          ├── etc/ 
          ├── img/ 
          └── README.md 
@@ -28,7 +29,7 @@ Folder structure
 | Product | Supported AI SDK version |
 |---|---|
 | RZ/V2H Evaluation Board Kit (RZ/V2H EVK) | RZ/V2H AI SDK v5.20 |
-| RZ/V2N Evaluation Board Kit (RZ/V2N EVK) | RZ/V2N AI SDK v5.00 |
+| RZ/V2N Evaluation Board Kit (RZ/V2N EVK) | RZ/V2N AI SDK v6.00 |
 
 ### Input/Output
 <table>
@@ -46,7 +47,6 @@ Folder structure
       <td style="text-align:center;">RZ/V2N EVK</td>
     </tr>
 </table>
-
 
 ## Application: Requirements
 
@@ -91,7 +91,7 @@ Folder structure
       <td>Used to connect the HDMI Monitor and the board.<br>
       RZ/V2N EVK has HDMI port.</td>
     </tr>
-        <tr>
+    <tr>
       <td>Intel RealSense Depth Camera D435i </td>
       <td>Used as a camera input source.</td>
     </tr>
@@ -113,7 +113,8 @@ Folder structure
     <tr>
       <td>Linux PC</td>
       <td>Used to build application and setup microSD card.<br>
-      Operating Environment: Ubuntu 20.04</td>
+      Operating Environment:
+      <ul style="margin: 0;"><li>RZ/V2H and RZ/V2N: Ubuntu 20.04</li></ul></td>
     </tr>
     <tr>
       <td>SD card reader</td>
@@ -151,18 +152,17 @@ Intel RealSense Depth Camera D435i needs to be connected to appropriate port bas
 All pre-built binaries are provided.
 
 ### Prerequisites
-This section expects the user to have completed Step 5 of [Getting Started Guide](https://renesas-rz.github.io/rzv_ai_sdk/5.20/getting_started.html) provided by Renesas. 
+This section expects the user to have completed Step 5 of [Getting Started Guide](https://renesas-rz.github.io/rzv_ai_sdk/6.10/getting_started.html) provided by Renesas. 
 
 After completion of the guide, the user is expected of following things.
 - AI SDK setup is done.
 - Following docker container is running on the host machine.
-
     | Board | Docker container |
     |---|---|
-    | RZ/V2H EVK and RZ/V2N EVK | `rzv2h_ai_sdk_container`  |
+    | RZ/V2H EVK | `rzv2h_ai_sdk_container` |
+    | RZ/V2N EVK | `rzv2n_ai_sdk_container` |
 
-    >**Note 1:** Docker environment is required for building the sample application.  
-    **Note 2:** Since RZ/V2N is a brother chip of RZ/V2H, the same environment can be used.
+    >**Note:** Docker environment is required for building the sample application.  
 
 
 ### Application File Generation
@@ -173,7 +173,7 @@ After completion of the guide, the user is expected of following things.
         > /drp-ai_tvm/data/C02_depth_cam_human_body_estimation/src
 
 2. Run (or start) the docker container and open the bash terminal on the container.  
-  E.g., for RZ/V2H and RZ/V2N, use the `rzv2h_ai_sdk_container` as the name of container created from  `rzv2h_ai_sdk_image` docker image.  
+    E.g., for RZ/V2H, use the `rzv2h_ai_sdk_container` as the name of container created from  `rzv2h_ai_sdk_image` docker image.  
 
    > Note that all the build steps/commands listed below are executed on the docker container bash terminal.  
 
@@ -211,14 +211,24 @@ After completion of the guide, the user is expected of following things.
     >**Note:** If any errors occur, run `apt update`.
     
     (5) librealsense source build.
-    ```sh
-    mkdir build
-    cd build
+    - For RZ/V2H
+        ```sh
+        mkdir build
+        cd build
 
-    source /opt/poky/3.1.31/environment-setup-aarch64-poky-linux
-    cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_WITH_CPU_EXTENSIONS=TRUE -DHWM_OVER_XU=FALSE -DFORCE_RSUSB_BACKEND=TRUE -DBUILD_EXAMPLES=FALSE ..
-    make -j$(nproc)
-    ```
+        source /opt/poky/3.1.31/environment-setup-aarch64-poky-linux
+        cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_WITH_CPU_EXTENSIONS=TRUE -DHWM_OVER_XU=FALSE -DFORCE_RSUSB_BACKEND=TRUE -DBUILD_EXAMPLES=FALSE ..
+        make -j$(nproc)
+        ```
+    - For RZ/V2N
+        ```sh
+        mkdir build
+        cd build
+
+        source /opt/rz-vlp/5.0.6/environment-setup-cortexa55-poky-linux
+        cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_WITH_CPU_EXTENSIONS=TRUE -DHWM_OVER_XU=FALSE -DFORCE_RSUSB_BACKEND=TRUE -DBUILD_EXAMPLES=FALSE ..
+        make -j$(nproc)
+        ```
 
     (6) `librealsense2.so.2.56.2` library is created.
     ```sh
@@ -240,39 +250,39 @@ After completion of the guide, the user is expected of following things.
 
 7. Go to the application source code directory.  
     ```sh
-    cd ${PROJECT_PATH}/src 
+    cd ${PROJECT_PATH}/src
     ```
 
 8. Create and move to the `build` directory.
     ```sh
-    mkdir -p build 
+    mkdir -p build
     cd build
     ```
 9. Build the application by following the commands below.  
-    ```sh
-    cmake -DCMAKE_TOOLCHAIN_FILE=./toolchain/runtime.cmake -DV2H=ON ..
-    make -j$(nproc)
-    ```
+      ```sh
+      cmake -DCMAKE_TOOLCHAIN_FILE=./toolchain/runtime.cmake ..
+      make -j$(nproc)
+      ```
 10. The following application file would be generated in the `${PROJECT_PATH}/src/build` directory
-    
+
     - app_body_meas_cam
+
 
 ## Application: Deploy Stage
 ### Prerequisites
-This section expects the user to have completed Step 7-1 of [Getting Started Guide](https://renesas-rz.github.io/rzv_ai_sdk/5.20/getting_started_v2h.html#step7) provided by Renesas. 
+This section expects the user to have completed Step 7-1 of [Getting Started Guide](https://renesas-rz.github.io/rzv_ai_sdk/6.10/getting_started_v2h.html#step7) provided by Renesas. 
 
 After completion of the guide, the user is expected of following things.
 - microSD card setup is done.
 
 ### File Configuration
-
 For the ease of deployment all the deployables file and folders are provided in following folder. 
 
 | Board | `EXE_DIR` |
 |---|---|
-| RZ/V2H EVK and RZ/V2N EVK | [exe](./exe) |
+| RZ/V2H EVK | [exe_v2h](./exe_v2h) |
+| RZ/V2N EVK | [exe_v2n](./exe_v2n) |
 
->**Note:** Since RZ/V2N is a brother chip of RZ/V2H, the same environment can be used.
 
 The folder contains following items. 
 |File | Details |
@@ -291,9 +301,9 @@ The folder contains following items.
           <th>File Location</th>
         </tr>
         <tr>
-          <td rowspan="2">RZ/V2H EVK and RZ/V2N EVK</td>
-          <td rowspan="2">exe</td>
-          <td rowspan="2"><span style="font-size: small"><code>https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v5.20/</code></span></td>
+          <td rowspan="2">RZ/V2H EVK</td>
+          <td rowspan="2">exe_v2h</td>
+          <td rowspan="3"><span style="font-size: small"><code>https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v5.20/</code></span></td>
           <td>librealsense2.so.2.56.2</td>
           <td><a href="https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v5.20/librealsense2.so.2.56.2">v5.20 Release</a></td>
         </tr>
@@ -301,72 +311,115 @@ The folder contains following items.
           <td>C02_depth_cam_human_body_estimation_deploy_tvm_v2h-v230.so</td>
           <td><a href="https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v5.20/C02_depth_cam_human_body_estimation_deploy_tvm_v2h-v230.so">v5.20 Release</a></td>
         </tr>
+        <tr>
+          <td rowspan="2">RZ/V2N EVK</td>
+          <td rowspan="2">exe_v2n</td>
+          <td>librealsense2.so.2.56.2</td>
+          <td><a href="https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v5.20/librealsense2.so.2.56.2">v5.20 Release</a></td>
+        </tr>
+        <tr>
+          <td><span style="font-size: small"><code>https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v6.10/</code></span></td>
+          <td>C02_depth_cam_human_body_estimation_deploy_tvm_v2n-v230.so</td>
+          <td><a href="https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v6.10/C02_depth_cam_human_body_estimation_deploy_tvm_v2n-v230.so">v6.10 Release</a></td>
+        </tr>
     </table>
 
-    >**Note:** Since RZ/V2N is a brother chip of RZ/V2H, the same environment can be used.  
     
     - Intel RealSense Depth Camera library 
       >**Note:** Not required if you have already generated in the [previous stage (build)](#application-build-stage).
       
-        ```sh
-        cd C02_depth_cam_human_body_estimation/<EXE_DIR>
-        wget https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v5.20/librealsense2.so.2.56.2
-        ln -s librealsense2.so.2.56.2 librealsense2.so.2.56
-        ln -s librealsense2.so.2.56 librealsense2.so
-        ```    
-    
-    - deploy.so
-        ```sh
-        cd C02_depth_cam_human_body_estimation/<EXE_DIR>/hrnet_cam
-        wget https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v5.20/C02_depth_cam_human_body_estimation_deploy_tvm_v2h-v230.so
-        ```
-        
-2. Rename the `C02_depth_cam_human_body_estimation_*.so` to `deploy.so`.
-    ```sh
-    mv C02_depth_cam_human_body_estimation_deploy_tvm_v2h-v230.so deploy.so
-    ```
-        └── C02_depth_cam_human_body_estimation/  
-            ├── src/
-            ├── exe/
-            │   └── hrnet_cam/ <-- deploy.so
-            ├── etc/ 
-            ├── img/ 
-            └── README.md 
+      ```sh
+      cd C02_depth_cam_human_body_estimation/<EXE_DIR>
+      wget https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v5.20/librealsense2.so.2.56.2
+      ln -s librealsense2.so.2.56.2 librealsense2.so.2.56
+      ln -s librealsense2.so.2.56 librealsense2.so
+      ``` 
 
-3. Copy the following files to the `/home/root/tvm` directory of the rootfs (SD Card) for the board.
+    - deploy.so  
+        - For RZ/V2H
+            ```sh
+            cd C02_depth_cam_human_body_estimation/<EXE_DIR>/hrnet_cam
+            wget https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v5.20/C02_depth_cam_human_body_estimation_deploy_tvm_v2h-v230.so
+            ```
+        - For RZ/V2N
+            ```sh
+            cd C02_depth_cam_human_body_estimation/<EXE_DIR>/hrnet_cam
+            wget https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v6.10/C02_depth_cam_human_body_estimation_deploy_tvm_v2n-v230.so
+            ```
+
+2. Rename the `C02_depth_cam_human_body_estimation_*.so` to `deploy.so`.  
+    - For RZ/V2H
+        ```sh
+        mv C02_depth_cam_human_body_estimation_deploy_tvm_v2h-v230.so deploy.so
+        ```
+    - For RZ/V2N
+        ```sh
+        mv C02_depth_cam_human_body_estimation_deploy_tvm_v2n-v230.so deploy.so
+        ```
+    
+    ```sh
+    └── C02_depth_cam_human_body_estimation/  
+        ├── src/
+        ├── exe_v2*/
+        │   └── hrnet_cam/ <-- deploy.so
+        ├── etc/ 
+        ├── img/ 
+        └── README.md 
+    ```
+
+3. Copy the following files to the `/home/root/tvm` directory (RZ/V2H) or `/home/weston/tvm` directory (RZ/V2N) of the rootfs (SD Card) for the board.
     |File | Details |
     |---|---|
-    |All files in [exe](./exe)  directory | Including `deploy.so` file. |
+    |All files in `EXE_DIR` directory | Including `deploy.so` file. |
     |`app_body_meas_cam` application file | Generated the file according to [Application File Generation](#application-file-generation) |
 
-4. Check if `libtvm_runtime.so` exists under `/usr/lib64` directory of the rootfs (SD card) on the board.
+4. Check if `libtvm_runtime.so` exists under `/usr/lib64` directory (RZ/V2H) or `/usr/lib` directory (RZ/V2N) of the rootfs (SD card) on the board.
 
-5. Folder 
-structure in the rootfs (SD Card) would look like:
-    ```sh
-    ├── usr/
-    │       └── libtvm_runtime.so
-    └── home/
-        └── root/
-            └── tvm/ 
-                ├── hrnet_cam/
-                │   ├── preprocess
-                │   ├── deploy.json
-                │   ├── deploy.params
-                │   ├── deploy.so
-                │   └── input_0.bin
-                ├── librealsense2.so.2.56.2
-                ├── librealsense2.so.2.56
-                ├── librealsense2.so
-                └── app_body_meas_cam
-    ```
->**Note:** The directory name could be anything instead of `tvm`. If you copy the whole `EXE_DIR` folder 
-on the board, you are not required to rename it `tvm`.
-   
+5. Folder structure in the rootfs (SD Card) would look like:
+    - For RZ/V2H
+        ```sh
+        ├── usr/
+        │   └── lib64/
+        │       └── libtvm_runtime.so
+        └── home/
+            └── root/
+                └── tvm/ 
+                    ├── hrnet_cam/
+                    │   ├── preprocess
+                    │   ├── deploy.json
+                    │   ├── deploy.params
+                    │   ├── deploy.so
+                    │   └── input_0.bin
+                    ├── librealsense2.so.2.56.2
+                    ├── librealsense2.so.2.56
+                    ├── librealsense2.so
+                    └── app_body_meas_cam
+        ```
+    - For RZ/V2N
+        ```sh
+        ├── usr/
+        │   └── lib/
+        │       └── libtvm_runtime.so
+        └── home/
+            └── weston/
+                └── tvm/ 
+                    ├── hrnet_cam/
+                    │   ├── preprocess
+                    │   ├── deploy.json
+                    │   ├── deploy.params
+                    │   ├── deploy.so
+                    │   └── input_0.bin
+                    ├── librealsense2.so.2.56.2
+                    ├── librealsense2.so.2.56
+                    ├── librealsense2.so
+                    └── app_body_meas_cam
+        ```
+>**Note:** The directory name could be anything instead of `tvm`. If you copy the whole `EXE_DIR` folder on the board, you are not required to rename it `tvm`.
+
 ## Application: Run Stage
 
 ### Prerequisites
-This section expects the user to have completed Step 7-3 of [Getting Started Guide](https://renesas-rz.github.io/rzv_ai_sdk/5.20/getting_started_v2h.html#step7-3) provided by Renesas. 
+This section expects the user to have completed Step 7-3 of [Getting Started Guide](https://renesas-rz.github.io/rzv_ai_sdk/6.10/getting_started_v2h.html#step7-3) provided by Renesas. 
 
 After completion of the guide, the user is expected of following things.  
 - The board setup is done.  
@@ -374,16 +427,33 @@ After completion of the guide, the user is expected of following things.
 
 ### Instruction
 1. On Board terminal, go to the `tvm` directory of the rootfs.
-    ```sh
-    cd /home/root/tvm
-    ```
+    - For RZ/V2H
+      ```sh
+      cd /home/root/tvm
+      ```
+
+    - For RZ/V2N
+      ```sh
+      cd /home/weston/tvm
+      ```
 
 2. Run the application.
-    ```sh
-    chmod +x app_body_meas_cam
-    ./app_body_meas_cam
-    ```
-    >**Note:** The `chmod` command is only necessary if the application does not have execution permission.
+    - For RZ/V2H
+      ```sh
+      chmod +x app_body_meas_cam
+      ./app_body_meas_cam
+      ```
+      
+    - For RZ/V2N
+      ```sh
+      su
+      chmod +x app_body_meas_cam
+      ./app_body_meas_cam
+      exit  # After pressing ENTER key to terminate the application.
+      ```
+    >**Note 1:** The `chmod` command is only necessary if the application does not have execution permission.  
+    >**Note 2:** For RZ/V2N AI SDK v6.00 and later, you need to switch to the root user with the `su` command when running an application.  
+    This is because when you run an application from a weston-terminal, you are switched to the "weston" user, which does not have permission to run the `/dev/xxx` device used in the application.  
 
 3. Following window shows up on HDMI screen.  
 
@@ -403,22 +473,18 @@ After completion of the guide, the user is expected of following things.
 
     >**Note:** It is recommended that the measurer stand near the wall to improve measurement accuracy.
 
-4. To display detailed execution times, switch the application window to the terminal by using `Super(windows key)+Tab` and press "d" + `Enter` key on the terminal of the board.   
+4. To display detailed execution times, switch the application window to the terminal by using `Super(windows key)+Tab` and press "d" + `Enter` key on the terminal of the board.  
     ```sh
     d
     ```
     
 5. To terminate the application, switch the application window to the terminal by using `Super(windows key)+Tab` and press `Enter` key on the terminal of the board.
-
->**Note:** Since RZ/V2N is a brother chip of RZ/V2N, the same execution environment is used, which causes inconsistency in display contents,  
-i.e, RZ/V2N application log contains "RZ/V2H". This will be solved in the future version.
-
 ## Application: Configuration 
 
 ### AI Model
 - HRNET: [mmpose](https://github.com/open-mmlab/mmpose)
-  - Dataset: [COCO](https://cocodataset.org/#home)
-    - [COCO2017](http://images.cocodataset.org/annotations/annotations_trainval2017.zip)
+- Dataset: [COCO](https://cocodataset.org/#home)
+  - [COCO2017](http://images.cocodataset.org/annotations/annotations_trainval2017.zip)
   
   Input size: 1x3x192x256  
   Output size: 1x17x64x48  
@@ -450,7 +516,7 @@ i.e, RZ/V2N application log contains "RZ/V2H". This will be solved in the future
     </tr>
     <tr>
       <td>HRNET Inference</td>
-      <td>Approximately 17ms</td>
+      <td>Approximately 15ms</td>
     </tr>
     <tr>
       <td>HRNET Post-processing</td>
@@ -462,9 +528,9 @@ i.e, RZ/V2N application log contains "RZ/V2H". This will be solved in the future
 
 |Processing | Details |
 |---|---|
-|Pre-processing | Processed by DRP-AI. <br> |
-|Inference | Processed by DRP-AI and CPU. |
-|Post-processing | Processed by CPU. |
+|HRNET Pre-processing | Processed by DRP-AI. <br> |
+|HRNET Inference | Processed by DRP-AI and CPU. |
+|HRNET Post-processing | Processed by CPU. |
 
 
 ### Image buffer size
@@ -479,7 +545,7 @@ i.e, RZ/V2N application log contains "RZ/V2H". This will be solved in the future
 
 
 ## License
-For AI model, see following directory..  
+For AI model, see following directory..
 <table>
     <tr>
       <th>Board</th>
@@ -489,7 +555,7 @@ For AI model, see following directory..
     <tr>
       <td rowspan="3">RZ/V2H EVK</td>
       <td>HRNET</td>
-      <td><a href="exe/licenses"><code>exe/licenses</code></a></td>
+      <td><a href="exe_v2h/licenses"><code>exe_v2h/licenses</code></a></td>
     </tr>
     <tr>
       <td>spdlog</td>
@@ -502,7 +568,7 @@ For AI model, see following directory..
     <tr>
       <td rowspan="3">RZ/V2N EVK</td>
       <td>HRNET</td>
-      <td><a href="exe/licenses/"><code>exe/licenses</code></a></td>
+      <td><a href="exe_v2n/licenses/"><code>exe_v2n/licenses</code></a></td>
     </tr>
     <tr>
       <td>spdlog</td>

@@ -4,7 +4,7 @@
 /***********************************************************************************************************************
 * File Name    : patchcore_data.h
 * Version      : 1.00
-* Description  : RZ/V2H DRP-AI Sample Application for PyTorch ResNet with MIPI/USB Camera or Image
+* Description  : RZ/V2H and RZ/V2N DRP-AI Sample Application for PyTorch ResNet with MIPI/USB Camera or Image
 ***********************************************************************************************************************/
 
 #include "define.h"

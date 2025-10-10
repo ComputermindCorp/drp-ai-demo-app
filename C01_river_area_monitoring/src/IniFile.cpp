@@ -4,7 +4,7 @@
 /***********************************************************************************************************************
 * File Name    : IniFile.cpp
 * Version      : 1.00
-* Description  : RZ/V2H DRP-AI Sample Application for PyTorch DeepLabv3 + Megvii-Base Detection YOLOX with MIPI/USB Camera
+* Description  : RZ/V2H and RZ/V2N DRP-AI Sample Application for PyTorch DeepLabv3 + Megvii-Base Detection YOLOX with MIPI/USB Camera
 ***********************************************************************************************************************/
 
 /*****************************************

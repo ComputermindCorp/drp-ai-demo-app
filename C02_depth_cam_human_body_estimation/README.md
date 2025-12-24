@@ -319,7 +319,7 @@ The folder contains following items.
       
       ```sh
       cd C02_depth_cam_human_body_estimation/<EXE_DIR>
-      wget https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v6.20/librealsense2.so.2.56.2
+      wget https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v5.20/librealsense2.so.2.56.2
       ln -s librealsense2.so.2.56.2 librealsense2.so.2.56
       ln -s librealsense2.so.2.56 librealsense2.so
       ``` 

@@ -253,14 +253,14 @@ The folder contains following items.
         <tr>
           <td rowspan="2">RZ/V2H EVK and RZ/V2N EVK</td>
           <td rowspan="2">exe</td>
-          <td><span style="font-size: small"><code>https://github.com/Computermind-Renesas/drp-ai-demo-app/releases/download/v5.20/</code></span></td>
+          <td><span style="font-size: small"><code>https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v5.20/</code></span></td>
           <td>input_data_1.zip</td>
-          <td><a href="https://github.com/Computermind-Renesas/drp-ai-demo-app/releases/download/v5.20/input_data_1.zip">v5.20 Release</a></td>
+          <td><a href="https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v5.20/input_data_1.zip">v5.20 Release</a></td>
         </tr>
         <tr>
-          <td><span style="font-size: small"><code>https://github.com/Computermind-Renesas/drp-ai-demo-app/releases/download/v6.20/</code></span></td>
+          <td><span style="font-size: small"><code>https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v6.20/</code></span></td>
           <td>C03_surface_anomaly_detection_deploy_tvm_v2h-v251.so</td>
-          <td><a href="https://github.com/Computermind-Renesas/drp-ai-demo-app/releases/download/v6.20/C03_surface_anomaly_detection_deploy_tvm_v2h-v251.so">v6.20 Release</a></td>
+          <td><a href="https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v6.20/C03_surface_anomaly_detection_deploy_tvm_v2h-v251.so">v6.20 Release</a></td>
         </tr>
     </table>
 
@@ -269,7 +269,7 @@ The folder contains following items.
     - Sample models and Data  
         ```sh
         cd C03_surface_anomaly_detection/<EXE_DIR>
-        wget https://github.com/Computermind-Renesas/drp-ai-demo-app/releases/download/v5.20/input_data_1.zip
+        wget https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v5.20/input_data_1.zip
         unzip input_data_1.zip
         ```
         > **Note:** It includes default memory bank binary files (`XXXXX.bin`) and default image files (`XXXXX.png`).  
@@ -284,7 +284,7 @@ The folder contains following items.
     - deploy.so  
         ```sh
         cd C03_surface_anomaly_detection/<EXE_DIR>/patch_core_demo
-        wget https://github.com/Computermind-Renesas/drp-ai-demo-app/releases/download/v6.20/C03_surface_anomaly_detection_deploy_tvm_v2h-v251.so
+        wget https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v6.20/C03_surface_anomaly_detection_deploy_tvm_v2h-v251.so
         ```
 
 2. Rename the `C03_surface_anomaly_detection_deploy_*.so` to `deploy.so`.  

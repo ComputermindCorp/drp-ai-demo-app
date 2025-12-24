@@ -16,15 +16,14 @@ Folder structure
     └── C03_surface_anomaly_detection/
          ├── src/
          │   └── toolchain/
-         ├── exe_v2h/
-         ├── exe_v2n/
+         ├── exe/
          ├── img/ 
          └── README.md 
 
 ### Supported Product
 | Product | Supported AI SDK version |
 |---|---|
-| RZ/V2H Evaluation Board Kit (RZ/V2H EVK) | RZ/V2H AI SDK v5.20 |
+| RZ/V2H Evaluation Board Kit (RZ/V2H EVK) | RZ/V2H AI SDK v6.00 |
 | RZ/V2N Evaluation Board Kit (RZ/V2N EVK) | RZ/V2N AI SDK v6.00 |
 
 ### Input/Output
@@ -160,7 +159,7 @@ USB camera needs to be connected to appropriate port based on its requirement.
 All pre-built binaries are provided.
 
 ### Prerequisites
-This section, it is necessary to have completed up to Step 5 of the [Getting Started Guide](https://renesas-rz.github.io/rzv_ai_sdk/6.10/getting_started.html) provided by Renesas.<br>
+This section, it is necessary to have completed up to Step 5 of the [Getting Started Guide](https://renesas-rz.github.io/rzv_ai_sdk/6.20/getting_started.html) provided by Renesas.<br>
 
 After completion of the above steps, the user is expected of following things.
 - AI SDK setup is done.
@@ -222,7 +221,7 @@ const static std::string mem_bank_name = "resnet18_quantization_onnx_size224_par
 
 ## Application: Deploy Stage
 ### Prerequisites
-This section expects the user to have completed Step 7-1 of [Getting Started Guide](https://renesas-rz.github.io/rzv_ai_sdk/6.10/getting_started_v2h.html#step7) provided by Renesas. 
+This section expects the user to have completed Step 7-1 of [Getting Started Guide](https://renesas-rz.github.io/rzv_ai_sdk/6.20/getting_started_v2h.html#step7) provided by Renesas. 
 
 After completion of the guide, the user is expected of following things.
 - microSD card setup is done.
@@ -232,9 +231,8 @@ For the ease of deployment all the deployables file and folders are provided in 
 
 | Board | `EXE_DIR` |
 |---|---|
-| RZ/V2H EVK | [exe_v2h](./exe_v2h) |
-| RZ/V2N EVK | [exe_v2n](./exe_v2n) |
-
+| RZ/V2H EVK and RZ/V2N EVK | [exe](./exe) |
+>**Note:** Since RZ/V2N is a brother chip of RZ/V2H, the same environment can be used.
 
 The folder contains following items. 
 |File | Details |
@@ -253,33 +251,25 @@ The folder contains following items.
           <th>File Location</th>
         </tr>
         <tr>
-          <td rowspan="2">RZ/V2H EVK</td>
-          <td rowspan="2">exe_v2h</td>
-          <td rowspan="3"><span style="font-size: small"><code>https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v5.20/</code></span></td>
+          <td rowspan="2">RZ/V2H EVK and RZ/V2N EVK</td>
+          <td rowspan="2">exe</td>
+          <td><span style="font-size: small"><code>https://github.com/Computermind-Renesas/drp-ai-demo-app/releases/download/v5.20/</code></span></td>
           <td>input_data_1.zip</td>
-          <td><a href="https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v5.20/input_data_1.zip">v5.20 Release</a></td>
+          <td><a href="https://github.com/Computermind-Renesas/drp-ai-demo-app/releases/download/v5.20/input_data_1.zip">v5.20 Release</a></td>
         </tr>
         <tr>
-          <td>C03_surface_anomaly_detection_deploy_tvm_v2h-v230.so</td>
-          <td><a href="https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v5.20/C03_surface_anomaly_detection_deploy_tvm_v2h-v230.so">v5.20 Release</a></td>
-        </tr>
-        <tr>
-          <td rowspan="2">RZ/V2N EVK</td>
-          <td rowspan="2">exe_v2n</td>
-          <td>input_data_1.zip</td>
-          <td><a href="https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v5.20/input_data_1.zip">v5.20 Release</a></td>
-        </tr>
-        <tr>
-          <td><span style="font-size: small"><code>https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v6.10/</code></span></td>
-          <td>C03_surface_anomaly_detection_deploy_tvm_v2n-v230.so</td>
-          <td><a href="https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v6.10/C03_surface_anomaly_detection_deploy_tvm_v2n-v230.so">v6.10 Release</a></td>
+          <td><span style="font-size: small"><code>https://github.com/Computermind-Renesas/drp-ai-demo-app/releases/download/v6.20/</code></span></td>
+          <td>C03_surface_anomaly_detection_deploy_tvm_v2h-v251.so</td>
+          <td><a href="https://github.com/Computermind-Renesas/drp-ai-demo-app/releases/download/v6.20/C03_surface_anomaly_detection_deploy_tvm_v2h-v251.so">v6.20 Release</a></td>
         </tr>
     </table>
+
+    > **Note:** Since RZ/V2N is a brother chip of RZ/V2H, the same environment can be used.
 
     - Sample models and Data  
         ```sh
         cd C03_surface_anomaly_detection/<EXE_DIR>
-        wget https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v5.20/input_data_1.zip
+        wget https://github.com/Computermind-Renesas/drp-ai-demo-app/releases/download/v5.20/input_data_1.zip
         unzip input_data_1.zip
         ```
         > **Note:** It includes default memory bank binary files (`XXXXX.bin`) and default image files (`XXXXX.png`).  
@@ -292,84 +282,53 @@ The folder contains following items.
         ```
         
     - deploy.so  
-        - For RZ/V2H
-            ```sh
-            cd C03_surface_anomaly_detection/<EXE_DIR>/patch_core_demo
-            wget https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v5.20/C03_surface_anomaly_detection_deploy_tvm_v2h-v230.so
-            ```
-        - For RZ/V2N
-            ```sh
-            cd C03_surface_anomaly_detection/<EXE_DIR>/patch_core_demo
-            wget https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v6.10/C03_surface_anomaly_detection_deploy_tvm_v2n-v230.so
-            ```
+        ```sh
+        cd C03_surface_anomaly_detection/<EXE_DIR>/patch_core_demo
+        wget https://github.com/Computermind-Renesas/drp-ai-demo-app/releases/download/v6.20/C03_surface_anomaly_detection_deploy_tvm_v2h-v251.so
+        ```
 
 2. Rename the `C03_surface_anomaly_detection_deploy_*.so` to `deploy.so`.  
-    - For RZ/V2H
-        ```sh
-        mv C03_surface_anomaly_detection_deploy_tvm_v2h-v230.so deploy.so
-        ```
-    - For RZ/V2N
-        ```sh
-        mv C03_surface_anomaly_detection_deploy_tvm_v2n-v230.so deploy.so
-        ```
+    ```sh
+    mv C03_surface_anomaly_detection_deploy_tvm_v2h-v251.so deploy.so
+    ```
+
     ```sh
     └── C03_surface_anomaly_detection/  
         ├── src/
-        ├── exe_v2*/
+        ├── exe/
         │   └── patch_core_demo/ <-- deploy.so
         ├── etc/ 
         ├── img/ 
         └── README.md 
     ```
 
-3. Copy the following files to the `/home/root/tvm` directory (RZ/V2H) or `/home/weston/tvm` directory (RZ/V2N) of the rootfs (SD Card) for the board.
+3. Copy the following files to the `/home/weston/tvm` directory of the rootfs (SD Card) for the board.
     |File | Details |
     |---|---|
     |All files in `EXE_DIR` directory | Including `deploy.so` file. |
     |`app_patch_core_demo` application file | Generated the file according to [Application File Generation](#application-file-generation) |
 
-4. Check if `libtvm_runtime.so` exists under `/usr/lib64` directory (RZ/V2H) or `/usr/lib` directory (RZ/V2N) of the rootfs (SD card) on the board.
+4. Check if `libtvm_runtime.so` exists under `/usr/lib` directory of the rootfs (SD card) on the board.
 
 5. Folder structure in the rootfs (SD Card) would look like:
-    - For RZ/V2H
-        ```sh
-        ├── usr/
-        │   └── lib64/
-        │       └── libtvm_runtime.so
-        └── home/
-            └── root/
-                └── tvm/ 
-                    ├── patch_core_demo/
-                    │   ├── preprocess
-                    │   ├── deploy.json
-                    │   ├── deploy.params
-                    │   ├── deploy.so
-                    │   └── input_0.bin
-                    ├── input_data_1/
-                    │   ├── XXXXX.bin
-                    │   └── XXXXX.png
-                    └── app_patch_core_demo
-        ```
-
-    - For RZ/V2N
-        ```sh
-        ├── usr/
-        │   └── lib/
-        │       └── libtvm_runtime.so
-        └── home/
-            └── weston/
-                └── tvm/ 
-                    ├── patch_core_demo/
-                    │   ├── preprocess
-                    │   ├── deploy.json
-                    │   ├── deploy.params
-                    │   ├── deploy.so
-                    │   └── input_0.bin
-                    ├── input_data_1/
-                    │   ├── XXXXX.bin
-                    │   └── XXXXX.png
-                    └── app_patch_core_demo
-        ```
+    ```sh
+    ├── usr/
+    │   └── lib/
+    │       └── libtvm_runtime.so
+    └── home/
+        └── weston/
+            └── tvm/ 
+                ├── patch_core_demo/
+                │   ├── preprocess
+                │   ├── deploy.json
+                │   ├── deploy.params
+                │   ├── deploy.so
+                │   └── input_0.bin
+                ├── input_data_1/
+                │   ├── XXXXX.bin
+                │   └── XXXXX.png
+                └── app_patch_core_demo
+    ```
 >**Note:** The directory name could be anything instead of `tvm`. If you copy the whole `EXE_DIR` folder on the board, you are not required to rename it `tvm`.
 
 >**Note:** The folder name could be anything instead of `input_data_1`. 
@@ -384,7 +343,7 @@ Generate a binary file for the memory bank according to [Memory Bank File Genera
 ## Application: Run Stage
 
 ### Prerequisites
-This section expects the user to have completed Step 7-3 of [Getting Started Guide](https://renesas-rz.github.io/rzv_ai_sdk/6.10/getting_started_v2h.html#step7-3) provided by Renesas. 
+This section expects the user to have completed Step 7-3 of [Getting Started Guide](https://renesas-rz.github.io/rzv_ai_sdk/6.20/getting_started_v2h.html#step7-3) provided by Renesas. 
 
 After completion of the guide, the user is expected of following things.  
 - The board setup is done.  
@@ -392,32 +351,19 @@ After completion of the guide, the user is expected of following things.
 
 ### Instruction
 1. On Board terminal, go to the `tvm` directory of the rootfs.
-    - For RZ/V2H
-      ```sh
-      cd /home/root/tvm
-      ```
-
-    - For RZ/V2N
-      ```sh
-      cd /home/weston/tvm
-      ```
+    ```sh
+    cd /home/weston/tvm
+    ```
 
 2. Run the application.
-    - For RZ/V2H
-      ```sh
-      chmod +x app_patch_core_demo
-      ./app_patch_core_demo APP_MODE FILE_PATH
-      ```
-      
-    - For RZ/V2N
-      ```sh
-      su
-      chmod +x app_patch_core_demo
-      ./app_patch_core_demo APP_MODE FILE_PATH
-      exit  # After pressing the Cross button to terminate the application.
-      ```
+    ```sh
+    su
+    chmod +x app_patch_core_demo
+    ./app_patch_core_demo APP_MODE FILE_PATH
+    exit  # After pressing the Cross button to terminate the application.
+    ```
     >**Note 1:** The `chmod` command is only necessary if the application does not have execution permission.  
-    >**Note 2:** For RZ/V2N AI SDK v6.00 and later, you need to switch to the root user with the `su` command when running an application.  
+    >**Note 2:** For RZ/V2H and RZ/V2N AI SDK v6.00 and later, you need to switch to the root user with the `su` command when running an application.  
     This is because when you run an application from a weston-terminal, you are switched to the "weston" user, which does not have permission to run the `/dev/xxx` device used in the application.  
     - The argument `APP_MODE` is chosen from `0`(Image mode) or `1`(Camera mode).
     - The argument `FILE_PATH` is the input data folder path.
@@ -474,15 +420,15 @@ After completion of the guide, the user is expected of following things.
     <tr>
       <td rowspan="3">RZ/V2H</td>
       <td>PatchCore_resnet18 Pre-processing</td>
-      <td>Approximately 2.6ms</td>
-    </tr>
-    <tr>
-      <td>PatchCore_resnet18 Inference</td>
       <td>Approximately 2.2ms</td>
     </tr>
     <tr>
+      <td>PatchCore_resnet18 Inference</td>
+      <td>Approximately 2.3ms</td>
+    </tr>
+    <tr>
       <td>PatchCore_resnet18 Post-processing</td>
-      <td>Approximately 31.5ms</td>
+      <td>Approximately 30.0ms</td>
     </tr>
     <tr>
       <td rowspan="3">RZ/V2N</td>
@@ -526,6 +472,6 @@ https://renesas-rz.github.io/rzv_ai_sdk/latest/about-applications.
 For AI model, see following directory..  
 | Board | AI Model | License directory|
 |---|---|---|
-| RZ/V2H EVK | PatchCore_resnet18 | [`exe_v2h/licenses`](exe_v2h/licenses/)  |
-| RZ/V2N EVK | PatchCore_resnet18 | [`exe_v2n/licenses`](exe_v2n/licenses/)  |
+| RZ/V2H EVK | PatchCore_resnet18 | [`exe/licenses`](exe/licenses/)  |
+| RZ/V2N EVK | PatchCore_resnet18 | [`exe/licenses`](exe/licenses/)  |
 

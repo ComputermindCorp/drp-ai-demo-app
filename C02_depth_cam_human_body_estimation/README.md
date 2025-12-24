@@ -19,8 +19,7 @@ Folder structure
          │      ├── spdlog/
          │      └── librealsense/
          │          └──lib/
-         ├── exe_v2h/
-         ├── exe_v2n/
+         ├── exe/
          ├── etc/ 
          ├── img/ 
          └── README.md 
@@ -28,7 +27,7 @@ Folder structure
 ### Supported Product
 | Product | Supported AI SDK version |
 |---|---|
-| RZ/V2H Evaluation Board Kit (RZ/V2H EVK) | RZ/V2H AI SDK v5.20 |
+| RZ/V2H Evaluation Board Kit (RZ/V2H EVK) | RZ/V2H AI SDK v6.00 |
 | RZ/V2N Evaluation Board Kit (RZ/V2N EVK) | RZ/V2N AI SDK v6.00 |
 
 ### Input/Output
@@ -152,7 +151,7 @@ Intel RealSense Depth Camera D435i needs to be connected to appropriate port bas
 All pre-built binaries are provided.
 
 ### Prerequisites
-This section expects the user to have completed Step 5 of [Getting Started Guide](https://renesas-rz.github.io/rzv_ai_sdk/6.10/getting_started.html) provided by Renesas. 
+This section expects the user to have completed Step 5 of [Getting Started Guide](https://renesas-rz.github.io/rzv_ai_sdk/6.20/getting_started.html) provided by Renesas. 
 
 After completion of the guide, the user is expected of following things.
 - AI SDK setup is done.
@@ -216,7 +215,7 @@ After completion of the guide, the user is expected of following things.
         mkdir build
         cd build
 
-        source /opt/poky/3.1.31/environment-setup-aarch64-poky-linux
+        source /opt/rz-vlp/5.0.11/environment-setup-cortexa55-poky-linux
         cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_WITH_CPU_EXTENSIONS=TRUE -DHWM_OVER_XU=FALSE -DFORCE_RSUSB_BACKEND=TRUE -DBUILD_EXAMPLES=FALSE ..
         make -j$(nproc)
         ```
@@ -270,7 +269,7 @@ After completion of the guide, the user is expected of following things.
 
 ## Application: Deploy Stage
 ### Prerequisites
-This section expects the user to have completed Step 7-1 of [Getting Started Guide](https://renesas-rz.github.io/rzv_ai_sdk/6.10/getting_started_v2h.html#step7) provided by Renesas. 
+This section expects the user to have completed Step 7-1 of [Getting Started Guide](https://renesas-rz.github.io/rzv_ai_sdk/6.20/getting_started_v2h.html#step7) provided by Renesas. 
 
 After completion of the guide, the user is expected of following things.
 - microSD card setup is done.
@@ -280,9 +279,8 @@ For the ease of deployment all the deployables file and folders are provided in 
 
 | Board | `EXE_DIR` |
 |---|---|
-| RZ/V2H EVK | [exe_v2h](./exe_v2h) |
-| RZ/V2N EVK | [exe_v2n](./exe_v2n) |
-
+| RZ/V2H EVK and RZ/V2N EVK | [exe](./exe) |
+>**Note:** Since RZ/V2N is a brother chip of RZ/V2H, the same environment can be used.
 
 The folder contains following items. 
 |File | Details |
@@ -301,125 +299,86 @@ The folder contains following items.
           <th>File Location</th>
         </tr>
         <tr>
-          <td rowspan="2">RZ/V2H EVK</td>
-          <td rowspan="2">exe_v2h</td>
-          <td rowspan="3"><span style="font-size: small"><code>https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v5.20/</code></span></td>
+          <td rowspan="2">RZ/V2H EVK and RZ/V2N EVK</td>
+          <td rowspan="2">exe</td>
+          <td><span style="font-size: small"><code>https://github.com/Computermind-Renesas/drp-ai-demo-app/releases/download/v5.20/</code></span></td>
           <td>librealsense2.so.2.56.2</td>
-          <td><a href="https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v5.20/librealsense2.so.2.56.2">v5.20 Release</a></td>
+          <td><a href="https://github.com/Computermind-Renesas/drp-ai-demo-app/releases/download/v5.20/librealsense2.so.2.56.2">v5.20 Release</a></td>
         </tr>
         <tr>
-          <td>C02_depth_cam_human_body_estimation_deploy_tvm_v2h-v230.so</td>
-          <td><a href="https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v5.20/C02_depth_cam_human_body_estimation_deploy_tvm_v2h-v230.so">v5.20 Release</a></td>
-        </tr>
-        <tr>
-          <td rowspan="2">RZ/V2N EVK</td>
-          <td rowspan="2">exe_v2n</td>
-          <td>librealsense2.so.2.56.2</td>
-          <td><a href="https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v5.20/librealsense2.so.2.56.2">v5.20 Release</a></td>
-        </tr>
-        <tr>
-          <td><span style="font-size: small"><code>https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v6.10/</code></span></td>
-          <td>C02_depth_cam_human_body_estimation_deploy_tvm_v2n-v230.so</td>
-          <td><a href="https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v6.10/C02_depth_cam_human_body_estimation_deploy_tvm_v2n-v230.so">v6.10 Release</a></td>
+          <td><span style="font-size: small"><code>https://github.com/Computermind-Renesas/drp-ai-demo-app/releases/download/v6.20/</code></span></td>
+          <td>C02_depth_cam_human_body_estimation_deploy_tvm_v2h-v251.so</td>
+          <td><a href="https://github.com/Computermind-Renesas/drp-ai-demo-app/releases/download/v6.20/C02_depth_cam_human_body_estimation_deploy_tvm_v2h-v251.so">v6.20 Release</a></td>
         </tr>
     </table>
 
+    > **Note:** Since RZ/V2N is a brother chip of RZ/V2H, the same environment can be used.
     
     - Intel RealSense Depth Camera library 
       >**Note:** Not required if you have already generated in the [previous stage (build)](#application-build-stage).
       
       ```sh
       cd C02_depth_cam_human_body_estimation/<EXE_DIR>
-      wget https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v5.20/librealsense2.so.2.56.2
+      wget https://github.com/Computermind-Renesas/drp-ai-demo-app/releases/download/v6.20/librealsense2.so.2.56.2
       ln -s librealsense2.so.2.56.2 librealsense2.so.2.56
       ln -s librealsense2.so.2.56 librealsense2.so
       ``` 
 
     - deploy.so  
-        - For RZ/V2H
-            ```sh
-            cd C02_depth_cam_human_body_estimation/<EXE_DIR>/hrnet_cam
-            wget https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v5.20/C02_depth_cam_human_body_estimation_deploy_tvm_v2h-v230.so
-            ```
-        - For RZ/V2N
-            ```sh
-            cd C02_depth_cam_human_body_estimation/<EXE_DIR>/hrnet_cam
-            wget https://github.com/ComputermindCorp/drp-ai-demo-app/releases/download/v6.10/C02_depth_cam_human_body_estimation_deploy_tvm_v2n-v230.so
-            ```
+      ```sh
+      cd C02_depth_cam_human_body_estimation/<EXE_DIR>/hrnet_cam
+      wget https://github.com/Computermind-Renesas/drp-ai-demo-app/releases/download/v6.20/C02_depth_cam_human_body_estimation_deploy_tvm_v2h-v251.so
+      ```
 
 2. Rename the `C02_depth_cam_human_body_estimation_*.so` to `deploy.so`.  
-    - For RZ/V2H
-        ```sh
-        mv C02_depth_cam_human_body_estimation_deploy_tvm_v2h-v230.so deploy.so
-        ```
-    - For RZ/V2N
-        ```sh
-        mv C02_depth_cam_human_body_estimation_deploy_tvm_v2n-v230.so deploy.so
-        ```
+    ```sh
+    mv C02_depth_cam_human_body_estimation_deploy_tvm_v2h-v251.so deploy.so
+    ```
     
     ```sh
     └── C02_depth_cam_human_body_estimation/  
         ├── src/
-        ├── exe_v2*/
+        ├── exe/
         │   └── hrnet_cam/ <-- deploy.so
         ├── etc/ 
         ├── img/ 
         └── README.md 
     ```
 
-3. Copy the following files to the `/home/root/tvm` directory (RZ/V2H) or `/home/weston/tvm` directory (RZ/V2N) of the rootfs (SD Card) for the board.
+3. Copy the following files to the `/home/weston/tvm` directory of the rootfs (SD Card) for the board.
     |File | Details |
     |---|---|
     |All files in `EXE_DIR` directory | Including `deploy.so` file. |
     |`app_body_meas_cam` application file | Generated the file according to [Application File Generation](#application-file-generation) |
 
-4. Check if `libtvm_runtime.so` exists under `/usr/lib64` directory (RZ/V2H) or `/usr/lib` directory (RZ/V2N) of the rootfs (SD card) on the board.
+4. Check if `libtvm_runtime.so` exists under `/usr/lib` directory of the rootfs (SD card) on the board.
 
 5. Folder structure in the rootfs (SD Card) would look like:
-    - For RZ/V2H
-        ```sh
-        ├── usr/
-        │   └── lib64/
-        │       └── libtvm_runtime.so
-        └── home/
-            └── root/
-                └── tvm/ 
-                    ├── hrnet_cam/
-                    │   ├── preprocess
-                    │   ├── deploy.json
-                    │   ├── deploy.params
-                    │   ├── deploy.so
-                    │   └── input_0.bin
-                    ├── librealsense2.so.2.56.2
-                    ├── librealsense2.so.2.56
-                    ├── librealsense2.so
-                    └── app_body_meas_cam
-        ```
-    - For RZ/V2N
-        ```sh
-        ├── usr/
-        │   └── lib/
-        │       └── libtvm_runtime.so
-        └── home/
-            └── weston/
-                └── tvm/ 
-                    ├── hrnet_cam/
-                    │   ├── preprocess
-                    │   ├── deploy.json
-                    │   ├── deploy.params
-                    │   ├── deploy.so
-                    │   └── input_0.bin
-                    ├── librealsense2.so.2.56.2
-                    ├── librealsense2.so.2.56
-                    ├── librealsense2.so
-                    └── app_body_meas_cam
-        ```
+    ```sh
+    ├── usr/
+    │   └── lib/
+    │       └── libtvm_runtime.so
+    └── home/
+        └── weston/
+            └── tvm/ 
+                ├── hrnet_cam/
+                │   ├── preprocess
+                │   ├── deploy.json
+                │   ├── deploy.params
+                │   ├── deploy.so
+                │   └── input_0.bin
+                ├── librealsense2.so.2.56.2
+                ├── librealsense2.so.2.56
+                ├── librealsense2.so
+                └── app_body_meas_cam
+    ```
+
 >**Note:** The directory name could be anything instead of `tvm`. If you copy the whole `EXE_DIR` folder on the board, you are not required to rename it `tvm`.
 
 ## Application: Run Stage
 
 ### Prerequisites
-This section expects the user to have completed Step 7-3 of [Getting Started Guide](https://renesas-rz.github.io/rzv_ai_sdk/6.10/getting_started_v2h.html#step7-3) provided by Renesas. 
+This section expects the user to have completed Step 7-3 of [Getting Started Guide](https://renesas-rz.github.io/rzv_ai_sdk/6.20/getting_started_v2h.html#step7-3) provided by Renesas. 
 
 After completion of the guide, the user is expected of following things.  
 - The board setup is done.  
@@ -427,32 +386,19 @@ After completion of the guide, the user is expected of following things.
 
 ### Instruction
 1. On Board terminal, go to the `tvm` directory of the rootfs.
-    - For RZ/V2H
-      ```sh
-      cd /home/root/tvm
-      ```
-
-    - For RZ/V2N
-      ```sh
-      cd /home/weston/tvm
-      ```
+    ```sh
+    cd /home/weston/tvm
+    ```
 
 2. Run the application.
-    - For RZ/V2H
-      ```sh
-      chmod +x app_body_meas_cam
-      ./app_body_meas_cam
-      ```
-      
-    - For RZ/V2N
-      ```sh
-      su
-      chmod +x app_body_meas_cam
-      ./app_body_meas_cam
-      exit  # After pressing ENTER key to terminate the application.
-      ```
+    ```sh
+    su
+    chmod +x app_body_meas_cam
+    ./app_body_meas_cam
+    exit  # After pressing ENTER key to terminate the application.
+    ```
     >**Note 1:** The `chmod` command is only necessary if the application does not have execution permission.  
-    >**Note 2:** For RZ/V2N AI SDK v6.00 and later, you need to switch to the root user with the `su` command when running an application.  
+    >**Note 2:** For RZ/V2H and RZ/V2N AI SDK v6.00 and later, you need to switch to the root user with the `su` command when running an application.  
     This is because when you run an application from a weston-terminal, you are switched to the "weston" user, which does not have permission to run the `/dev/xxx` device used in the application.  
 
 3. Following window shows up on HDMI screen.  
@@ -499,11 +445,11 @@ After completion of the guide, the user is expected of following things.
     <tr>
       <td rowspan="3">RZ/V2H</td>
       <td>HRNET Pre-processing</td>
-      <td>Approximately 4ms</td>
+      <td>Approximately 3ms</td>
     </tr>
     <tr>
       <td>HRNET Inference</td>
-      <td>Approximately 10ms</td>
+      <td>Approximately 5ms</td>
     </tr>
     <tr>
       <td>HRNET Post-processing</td>
@@ -555,7 +501,7 @@ For AI model, see following directory..
     <tr>
       <td rowspan="3">RZ/V2H EVK</td>
       <td>HRNET</td>
-      <td><a href="exe_v2h/licenses"><code>exe_v2h/licenses</code></a></td>
+      <td><a href="exe/licenses"><code>exe/licenses</code></a></td>
     </tr>
     <tr>
       <td>spdlog</td>
@@ -568,7 +514,7 @@ For AI model, see following directory..
     <tr>
       <td rowspan="3">RZ/V2N EVK</td>
       <td>HRNET</td>
-      <td><a href="exe_v2n/licenses/"><code>exe_v2n/licenses</code></a></td>
+      <td><a href="exe/licenses/"><code>exe/licenses</code></a></td>
     </tr>
     <tr>
       <td>spdlog</td>
